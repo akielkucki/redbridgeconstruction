@@ -1,187 +1,142 @@
-// Site Configuration - Edit these values to customize the demo site
+// Site Configuration - Updated for Red Bridge Construction
 // All variables defined here are used across the entire website
 
 export const siteConfig = {
   // Company Information
   company: {
-    name: "TCR",
-    tagline: "Renovations",
-    fullName: "TCR Renovations",
-    description: "Contemporary renovation specialists transforming spaces with precision craftsmanship and modern design.",
-    foundedYear: 2015,
-    yearsExperience: 10,
-    projectsCompleted: 500,
-    awardsWon: 25,
+    name: "Red Bridge Construction",
+    tagline: "Building Excellence",
+    fullName: "Red Bridge Construction LLC",
+    description: "Serving New Hope and Bucks County with excellence and integrity. We are the trusted partner for homeowners and business owners who demand excellence in every detail.",
+    foundedYear: 1997,
+    yearsExperience: 28,
+    projectsCompleted: 500, // Placeholder
+    awardsWon: 5, // Placeholder based on "Award Winning" claim
   },
 
   // Contact Information
   contact: {
-    phone: "+1 (267) 543-4567",
-    email: "support@tcrrenovations.com",
+    phone: "(215) 534-1008",
+    email: "rob@redbridgeconstruction.com",
     address: {
-      street: "1234 Design District",
-      city: "Southampton",
+      street: "231 Red Bridge Rd",
+      city: "Kintnersville",
       state: "PA",
-      zip: "18966",
-      full: "1470 Buck Hill Dr, Southampton, PA 18966",
+      zip: "18930",
+      full: "231 Red Bridge Rd, Kintnersville, PA 18930",
     },
   },
 
   // Social Media Links
   social: {
-    instagram: "https://instagram.com/apexrenovations",
-    linkedin: "https://linkedin.com/company/apexrenovations",
-    pinterest: "https://pinterest.com/apexrenovations",
-    houzz: "https://houzz.com/apexrenovations",
+    instagram: "https://instagram.com/redbridgeconstruction", // Placeholder
+    facebook: "https://facebook.com/redbridgeconstruction", // Placeholder
+    googleBusiness: "https://www.redbridgeconstructionllc.com",
   },
 
   // Navigation Links
   navigation: [
-    { label: "Services", href: "#services" },
-    { label: "Portfolio", href: "#portfolio" },
     { label: "About", href: "#about" },
+    { label: "Services", href: "#services" },
+    { label: "Projects", href: "#portfolio" },
     { label: "Contact", href: "#contact" },
   ],
 
   // Services Offered
   services: [
     {
-      title: "Kitchen Renovations",
-      slug: "kitchen-renovations",
-      description: "Transform your kitchen into a culinary masterpiece with custom cabinetry, premium countertops, and state-of-the-art appliances.",
-      longDescription: "Our kitchen renovation services combine functionality with stunning aesthetics. From complete gut renovations to targeted upgrades, we handle every aspect of your kitchen transformation including custom cabinetry, premium countertops, modern appliances, lighting design, and flooring. We work closely with you to create a space that reflects your style while maximizing efficiency and storage.",
-      icon: "kitchen",
-      features: [
-        "Custom cabinetry design and installation",
-        "Premium countertop selection (granite, quartz, marble)",
-        "Modern appliance integration",
-        "Lighting design and installation",
-        "Flooring and backsplash tile work",
-        "Plumbing and electrical upgrades",
-      ],
-    },
-    {
-      title: "Bathroom Remodels",
-      slug: "bathroom-remodels",
-      description: "Create spa-like retreats with luxurious fixtures, custom tile work, and modern amenities that elevate daily routines.",
-      longDescription: "Transform your bathroom into a personal sanctuary with our comprehensive remodeling services. Whether you're updating a powder room or creating a luxurious master bath, we bring expertise in waterproofing, tile installation, fixture selection, and space optimization. Our team ensures every detail contributes to both beauty and functionality.",
-      icon: "bathroom",
-      features: [
-        "Custom shower and tub installations",
-        "Luxury fixture selection and installation",
-        "Custom tile work and waterproofing",
-        "Vanity and storage solutions",
-        "Heated flooring options",
-        "Ventilation and lighting upgrades",
-      ],
-    },
-    {
-      title: "Full Home Renovations",
-      slug: "full-home-renovations",
-      description: "Complete transformations that reimagine your entire living space while preserving architectural integrity.",
-      longDescription: "Our full home renovation services provide comprehensive transformations that touch every aspect of your living space. We coordinate all trades, manage permits, and ensure seamless integration between rooms. Whether you're modernizing a dated home or reconfiguring layouts for better flow, we deliver cohesive results that enhance both form and function.",
+      title: "Residential Construction",
+      slug: "residential-construction",
+      description: "Custom homes and renovations that bring your vision to life.",
+      longDescription: "We deliver exceptional residential construction services across Bucks County, working closely with you from initial vision to final walkthrough to ensure a painless process.",
       icon: "home",
       features: [
-        "Complete interior redesign",
-        "Structural modifications and open floor plans",
-        "Electrical and plumbing system upgrades",
-        "HVAC modernization",
-        "Window and door replacements",
-        "Finish carpentry and millwork",
+        "Custom Home Design",
+        "Kitchen & Bath Remodels",
+        "Home Additions",
+        "Outdoor Living Spaces",
       ],
     },
     {
-      title: "Deck Building & Outdoor Spaces",
-      slug: "deck-building-outdoor-spaces",
-      description: "Extend your living area outdoors with expertly crafted decks, patios, and landscaping features.",
-      longDescription: "Expand your living space into the outdoors with our custom deck building and outdoor living solutions. We design and construct durable, beautiful outdoor spaces using premium materials that withstand the elements. From intimate balconies to expansive multi-level decks with built-in features, we create outdoor environments perfect for relaxation and entertainment.",
-      icon: "outdoor",
+      title: "Commercial Construction",
+      slug: "commercial-construction",
+      description: "Professional spaces designed for business success.",
+      longDescription: "We provide comprehensive construction solutions for commercial clients, delivering rock-solid project delivery and finishing on time and on budget.",
+      icon: "business",
       features: [
-        "Custom deck design and construction",
-        "Composite and natural wood options",
-        "Built-in seating and planters",
-        "Outdoor kitchen integration",
-        "Pergolas and shade structures",
-        "Lighting and electrical for outdoor living",
+        "Office Buildings",
+        "Retail Spaces",
+        "Warehouses",
+        "Healthcare Facilities",
+      ],
+    },
+    {
+      title: "Historic Restoration",
+      slug: "historic-restoration",
+      description: "Preserving Bucks County's architectural heritage.",
+      longDescription: "Our team expertly balances heritage preservation with modern integration, ensuring period-accurate restorations that protect historic integrity.",
+      icon: "architecture",
+      features: [
+        "Period-Accurate Restoration",
+        "Structural Reinforcement",
+        "Heritage Preservation",
+        "Modern Integration",
       ],
     },
   ],
 
-  // Portfolio Projects
   portfolio: [
     {
-      title: "Malibu Beach House",
-      category: "Full Renovation",
-      image: "/portfolio/malibu.jpg",
-      description: "Complete transformation of a 4,500 sq ft oceanfront property.",
+      title: "Shed Remodeling",
+      category: "Outdoor Spaces",
+      image: "/portfolio/shed-remodel.jpg", // Placeholder image path
+      description: "Modernized outdoor shed with complete structural renovation, modern insulation, electrical upgrades, and custom storage solutions in New Hope, PA.",
     },
     {
-      title: "Downtown Loft",
-      category: "Kitchen & Bath",
-      image: "/portfolio/loft.png",
-      description: "Industrial-modern conversion with custom finishes.",
-    },
-    {
-      title: "Beverly Hills Estate",
-      category: "Full Renovation",
-      image: "/portfolio/beverly.png",
-      description: "Luxury estate renovation preserving 1920s character.",
-    },
-    {
-      title: "Venice Creative Studio",
-      category: "Commercial",
-      image: "/portfolio/venice.jpg",
-      description: "Adaptive reuse of warehouse into creative workspace.",
-    },
-    {
-      title: "Silver Lake Modern",
-      category: "Kitchen",
-      image: "/portfolio/silverlake.png",
-      description: "Minimalist kitchen with European cabinetry.",
-    },
-    {
-      title: "Pasadena Craftsman",
+      title: "Bathroom Remodel #1",
       category: "Bathroom",
-      image: "/portfolio/pasadena.jpg",
-      description: "Period-appropriate updates to historic home.",
+      image: "/portfolio/bathroom-1.jpg", // Placeholder image path
+      description: "Complete master bathroom renovation featuring new frameless glass enclosure, brushed brass fixtures, and custom niche shelving.",
+    },
+    {
+      title: "Bathroom Remodel #2",
+      category: "Bathroom",
+      image: "/portfolio/bathroom-2.jpg", // Placeholder image path
+      description: "Secondary bathroom upgrade featuring full wall patterned marble mosaic, recessed ceiling lighting, and a floating vanity with under‑cabinet LED accents.",
     },
   ],
 
   // Testimonials
   testimonials: [
+    // Note: Specific testimonials were not immediately visible on the homepage,
+    // so you may want to update these with real client quotes.
     {
-      name: "Sarah Chen",
-      role: "Homeowner, Malibu",
-      quote: "Apex transformed our dated beach house into a contemporary masterpiece. Their attention to detail and project management was impeccable.",
+      name: "Bucks County Homeowner",
+      role: "Residential Construction",
+      quote: "Rob and his team delivered rock-solid project delivery and superior results. They worked closely with us from initial vision to final walkthrough.",
       rating: 5,
     },
     {
-      name: "Marcus Williams",
-      role: "Restaurant Owner",
-      quote: "They delivered our restaurant renovation on time and under budget. The space has completely elevated our brand.",
-      rating: 5,
-    },
-    {
-      name: "Elena Rodriguez",
-      role: "Interior Designer",
-      quote: "As a designer, I'm particular about execution. Apex consistently delivers craftsmanship that exceeds expectations.",
+      name: "New Hope Resident",
+      role: "Bathroom Remodel",
+      quote: "We've earned a reputation for craftsmanship, transparent communication, and finishing on time and on budget. Red Bridge Construction made the process painless.",
       rating: 5,
     },
   ],
 
   // CTA Section
   cta: {
-    headline: "Ready to Transform Your Space?",
-    subheadline: "Schedule a consultation and let's bring your vision to life.",
-    buttonText: "Start Your Project",
+    headline: "Your Trusted Builder in Bucks County",
+    subheadline: "Experience matters. Our 28 years on the leading edge of building and renovation mean rock-solid project delivery and superior results.",
+    buttonText: "Get a Free Quote",
     buttonLink: "#contact",
   },
 
   // Footer
   footer: {
-    tagline: "Crafting exceptional spaces since 2015.",
-    copyright: `© ${new Date().getFullYear()} Apex Renovations. All rights reserved.`,
-    certifications: ["Licensed & Insured", "NARI Certified", "EPA Lead-Safe"],
+    tagline: "Quality craftsmanship, integrity, and exceptional results.",
+    copyright: `© ${new Date().getFullYear()} Red Bridge Construction LLC. All rights reserved.`,
+    certifications: ["Licensed & Insured", "Licensed & Bonded", "Quality Materials", "100% Satisfaction"],
   },
 } as const;
 
