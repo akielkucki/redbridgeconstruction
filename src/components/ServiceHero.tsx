@@ -100,7 +100,7 @@ export function ServiceHero({ service, city }: ServiceHeroProps) {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-12"
           >
-            <a href="#contact" className="btn-primary">
+            <a href="/#contact" className="btn-primary">
               <span>Get a Free Quote</span>
             </a>
           </motion.div>

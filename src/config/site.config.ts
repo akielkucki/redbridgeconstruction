@@ -5,7 +5,7 @@ export const siteConfig = {
   // Company Information
   company: {
     name: "Red Bridge Construction",
-    tagline: "Building Excellence",
+    tagline: "",
     fullName: "Red Bridge Construction LLC",
     description: "Serving New Hope and Bucks County with excellence and integrity. We are the trusted partner for homeowners and business owners who demand excellence in every detail.",
     foundedYear: 1997,
@@ -36,10 +36,10 @@ export const siteConfig = {
 
   // Navigation Links
   navigation: [
-    { label: "About", href: "#about" },
-    { label: "Services", href: "#services" },
-    { label: "Projects", href: "#portfolio" },
-    { label: "Contact", href: "#contact" },
+    { label: "About", href: "/#about" },
+    { label: "Services", href: "/#services" },
+    { label: "Projects", href: "/#portfolio" },
+    { label: "Contact", href: "/#contact" },
   ],
 
   // Services Offered

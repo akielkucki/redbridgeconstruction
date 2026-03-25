@@ -68,7 +68,7 @@ export function Footer() {
           className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8 mb-16"
         >
           <div>
-            <a href="#" className="inline-block mb-4">
+            <a href="/" className="inline-block mb-4">
               <span className="font-[family-name:var(--font-space-grotesk)] text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                 {siteConfig.company.name}
               </span>
@@ -81,7 +81,7 @@ export function Footer() {
             </p>
           </div>
           <a
-            href="#contact"
+            href="/#contact"
             className="group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-background font-[family-name:var(--font-inter)] font-semibold tracking-wide transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] hover:bg-accent-muted hover:scale-[1.03] hover:shadow-[0_8px_32px_rgba(245,239,224,0.15)] flex-shrink-0"
           >
             Start a Project
