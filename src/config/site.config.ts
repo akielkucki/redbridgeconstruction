@@ -157,7 +157,6 @@ export const siteConfig = {
     buttonLink: "#contact",
   },
 
-  // Footer
   footer: {
     tagline: "Quality craftsmanship, integrity, and exceptional results.",
     copyright: `© ${new Date().getFullYear()} Red Bridge Construction LLC. All rights reserved.`,
