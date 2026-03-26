@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { siteConfig } from "@/components/index";
 import { ArrowRight, Star } from "lucide-react";
+import Image from "next/image";
 
 // Golden ratio
 const PHI = 1.618;
@@ -30,6 +31,17 @@ export function Hero() {
 
             {/* --- Background --- */}
             <div className="absolute inset-0 z-0">
+                {/* Construction background image */}
+                <Image
+                    src="https://images.pexels.com/photos/8830259/pexels-photo-8830259.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+                    alt=""
+                    fill
+                    className="object-cover opacity-[0.09]"
+                    sizes="100vw"
+                    priority
+                />
+                {/* White wash overlay */}
+                <div className="absolute inset-0 bg-white/60" />
                 {/* Warm radial glow — positioned at golden ratio from top (38.2%) */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_38%,rgba(245,239,224,0.5),transparent)]" />
                 {/* Secondary soft glow for depth */}

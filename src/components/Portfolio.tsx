@@ -33,9 +33,21 @@ export function Portfolio() {
       : siteConfig.portfolio.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="portfolio" className="relative py-32 bg-background" ref={ref}>
-      {/* Subtle background texture */}
-      <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
+    <section id="portfolio" className="relative py-32 bg-background overflow-hidden" ref={ref}>
+      {/* Background image */}
+      <div className="absolute inset-0 pointer-events-none">
+        <Image
+          src="https://images.pexels.com/photos/30558333/pexels-photo-30558333.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+          alt=""
+          fill
+          className="object-cover opacity-[0.07]"
+          sizes="100vw"
+          priority={false}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
+      </div>
+      {/* Subtle grid overlay */}
+      <div className="absolute inset-0 grid-pattern opacity-10 pointer-events-none" />
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
