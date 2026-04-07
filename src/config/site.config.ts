@@ -17,7 +17,7 @@ export const siteConfig = {
   // Contact Information
   contact: {
     phone: "(215) 534-1008",
-    email: "rob@redbridgeconstruction.com",
+    email: "redbridgeconstructionllc@gmail.com",
     address: {
       street: "231 Red Bridge Rd",
       city: "Kintnersville",
