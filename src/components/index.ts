@@ -9,4 +9,7 @@ export { Contact } from "./Contact";
 export { Footer } from "./Footer";
 export { ServiceHero } from "./ServiceHero";
 export { ServiceFeatures } from "./ServiceFeatures";
+export { ServiceProcess } from "./ServiceProcess";
+export { ServiceProjects } from "./ServiceProjects";
+export { ServiceFAQ } from "./ServiceFAQ";
 export { siteConfig } from "@/config/site.config"

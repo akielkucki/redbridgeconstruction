@@ -4,54 +4,46 @@ import { siteConfig } from "@/components/index";
 import { Navigation, Footer, CTA, Contact } from "@/components";
 import { ServiceHero } from "@/components/ServiceHero";
 import { ServiceFeatures } from "@/components/ServiceFeatures";
+import { ServiceProcess } from "@/components/ServiceProcess";
+import { ServiceProjects } from "@/components/ServiceProjects";
+import { ServiceFAQ } from "@/components/ServiceFAQ";
 
-// Generate the location-based slug
-function getLocationSlug(serviceSlug: string, city: string): string {
-  return `${serviceSlug}-${city.toLowerCase().replace(/\s+/g, "-")}`;
+function getServiceSlug(serviceSlug: string): string {
+  return `${serviceSlug}-${siteConfig.contact.serviceAreaSlug}`;
 }
 
-// Find service by location-based slug
 function getServiceBySlug(slug: string) {
-  const city = siteConfig.contact.address.city.toLowerCase().replace(/\s+/g, "-");
-
   for (const service of siteConfig.services) {
-    const locationSlug = getLocationSlug(service.slug, siteConfig.contact.address.city);
-    if (locationSlug === slug) {
-      return { service, city: siteConfig.contact.address.city };
+    if (getServiceSlug(service.slug) === slug) {
+      return service;
     }
   }
   return null;
 }
 
-// Generate static params for all service pages
 export async function generateStaticParams() {
-  const city = siteConfig.contact.address.city;
-
   return siteConfig.services.map((service) => ({
-    slug: getLocationSlug(service.slug, city),
+    slug: getServiceSlug(service.slug),
   }));
 }
 
-// Generate metadata for each service page
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const result = getServiceBySlug(slug);
+  const service = getServiceBySlug(slug);
 
-  if (!result) {
-    return {
-      title: "Service Not Found",
-    };
+  if (!service) {
+    return { title: "Service Not Found" };
   }
 
-  const { service, city } = result;
+  const area = siteConfig.contact.serviceArea;
 
   return {
-    title: `${service.title} in ${city} | ${siteConfig.company.fullName}`,
-    description: `${service.description} Professional ${service.title.toLowerCase()} services in ${city}, ${siteConfig.contact.address.state}.`,
+    title: `${service.title} in ${area} | ${siteConfig.company.fullName}`,
+    description: `${service.description} Professional ${service.title.toLowerCase()} services across ${area}, ${siteConfig.contact.address.state}.`,
   };
 }
 
@@ -61,20 +53,23 @@ export default async function ServicePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const result = getServiceBySlug(slug);
+  const service = getServiceBySlug(slug);
 
-  if (!result) {
+  if (!service) {
     notFound();
   }
 
-  const { service, city } = result;
+  const area = siteConfig.contact.serviceArea;
 
   return (
     <>
       <Navigation />
       <main>
-        <ServiceHero service={service} city={city} />
-        <ServiceFeatures service={service} city={city} />
+        <ServiceHero service={service} area={area} />
+        <ServiceFeatures service={service} area={area} />
+        <ServiceProcess service={service} />
+        <ServiceProjects service={service} />
+        <ServiceFAQ service={service} area={area} />
         <CTA />
         <Contact />
       </main>

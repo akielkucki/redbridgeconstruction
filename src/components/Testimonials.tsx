@@ -1,97 +1,64 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
+import { Star, Quote } from "lucide-react";
 import { siteConfig } from "@/components/index";
+import { Card } from "@/components/ui/card";
+import { SectionHeading } from "@/components/ui/section-heading";
 
 export function Testimonials() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section className="relative py-32 bg-background" ref={ref}>
+    <section className="relative py-28 md:py-36 bg-background">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section header */}
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="flex items-center justify-center gap-4 mb-6"
-          >
-            <div className="w-12 h-px bg-gradient-to-r from-transparent via-foreground to-transparent" />
-            <span className="font-[family-name:var(--font-inter)] text-sm font-medium tracking-[0.2em] text-muted uppercase">
-              Testimonials
-            </span>
-            <div className="w-12 h-px bg-gradient-to-r from-transparent via-foreground to-transparent" />
-          </motion.div>
+        <SectionHeading
+          align="center"
+          eyebrow="Client Stories"
+          title={
+            <>
+              What clients
+              <br />
+              <span className="text-accent-gradient">say about us.</span>
+            </>
+          }
+          className="mb-16 md:mb-20"
+        />
 
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground"
-          >
-            What Our Clients
-            <br />
-            <span className="text-gradient">Say About Us</span>
-          </motion.h2>
-        </div>
-
-        {/* Testimonials grid */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {siteConfig.testimonials.map((testimonial, index) => (
+        <div className="grid md:grid-cols-3 gap-5">
+          {siteConfig.testimonials.map((t, index) => (
             <motion.div
-              key={testimonial.name}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.2 + index * 0.15 }}
-              className="group relative p-8 md:p-10 bg-surface border border-border hover:border-foreground/20 transition-all duration-500"
+              key={t.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              {/* Quote mark */}
-              <div className="absolute top-8 right-8 font-[family-name:var(--font-space-grotesk)] text-7xl font-bold text-foreground/5 leading-none">
-                &ldquo;
-              </div>
+              <Card className="h-full p-8 hover:shadow-lg transition-shadow">
+                <Quote className="w-8 h-8 text-[var(--accent)]/30 mb-4" />
 
-              {/* Stars */}
-              <div className="flex gap-1 mb-6">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <svg
-                    key={`star-${testimonial.name}-${i}`}
-                    className="w-5 h-5 text-foreground"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-
-              {/* Quote */}
-              <blockquote className="relative z-10 font-[family-name:var(--font-inter)] text-lg text-accent-muted leading-relaxed mb-8">
-                &ldquo;{testimonial.quote}&rdquo;
-              </blockquote>
-
-              {/* Author */}
-              <div className="flex items-center gap-4">
-                {/* Avatar placeholder */}
-                <div className="w-12 h-12 bg-surface-elevated border border-border flex items-center justify-center">
-                  <span className="font-[family-name:var(--font-space-grotesk)] text-lg font-bold text-foreground">
-                    {testimonial.name.charAt(0)}
-                  </span>
+                <div className="flex gap-0.5 mb-5 text-[var(--accent)]">
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <Star key={i} size={14} fill="currentColor" />
+                  ))}
                 </div>
-                <div>
-                  <div className="font-[family-name:var(--font-space-grotesk)] text-lg font-semibold text-foreground">
-                    {testimonial.name}
+
+                <blockquote className="font-[family-name:var(--font-inter)] text-foreground leading-relaxed mb-6">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+
+                <div className="flex items-center gap-3 pt-6 border-t border-border">
+                  <div className="w-10 h-10 rounded-full bg-surface-muted flex items-center justify-center font-[family-name:var(--font-space-grotesk)] font-bold text-foreground">
+                    {t.name.charAt(0)}
                   </div>
-                  <div className="font-[family-name:var(--font-inter)] text-sm text-muted">
-                    {testimonial.role}
+                  <div>
+                    <div className="font-[family-name:var(--font-space-grotesk)] font-semibold text-foreground text-sm">
+                      {t.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {t.role}
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Bottom accent line */}
-              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-foreground transition-all duration-500 group-hover:w-full" />
+              </Card>
             </motion.div>
           ))}
         </div>

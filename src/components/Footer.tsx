@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/components/index";
+import { Button } from "@/components/ui/button";
 
 function SocialIcon({ platform }: { platform: string }) {
   switch (platform) {
@@ -17,12 +17,6 @@ function SocialIcon({ platform }: { platform: string }) {
       return (
         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-        </svg>
-      );
-    case "houzz":
-      return (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12.518 12.375v6.281h-5.569v-10.594l2.784-1.406v-3.188l-7.733 3.938v15.594h15.532v-10.625h-5zm2.482-12.375l-7.733 3.906v3.188l7.733-3.906v-3.188z" />
         </svg>
       );
     case "googleBusiness":
@@ -42,66 +36,53 @@ function SocialIcon({ platform }: { platform: string }) {
 const platformLabels: Record<string, string> = {
   instagram: "Instagram",
   facebook: "Facebook",
-  houzz: "Houzz",
   googleBusiness: "Google",
 };
 
 export function Footer() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-
   return (
-    <footer className="relative bg-background overflow-hidden" ref={ref}>
-
-      {/* Top divider with glow */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
-
-      {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-12">
-
-        {/* Top row: Big brand + CTA */}
+    <footer className="relative bg-foreground text-background">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-10">
+        {/* Top: CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.19, 1, 0.22, 1] }}
-          className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8 mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-14 border-b border-white/10"
         >
           <div>
-            <a href="/" className="inline-block mb-4">
-              <span className="font-[family-name:var(--font-space-grotesk)] text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                {siteConfig.company.name}
-              </span>
-              <span className="font-[family-name:var(--font-space-grotesk)] text-3xl md:text-4xl font-light tracking-tight text-muted ml-2">
-                {siteConfig.company.tagline}
-              </span>
-            </a>
-            <p className="font-[family-name:var(--font-inter)] text-muted leading-relaxed max-w-md">
-              {siteConfig.footer.tagline}
-            </p>
+            <h3 className="font-[family-name:var(--font-space-grotesk)] text-3xl md:text-5xl font-bold text-white leading-[1.05] tracking-tight max-w-2xl">
+              Let&apos;s build something
+              <br />
+              <span className="text-accent-gradient">remarkable together.</span>
+            </h3>
+            <p className="mt-4 text-white/60 max-w-md">{siteConfig.footer.tagline}</p>
           </div>
-          <a
-            href="/#contact"
-            className="group flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-background font-[family-name:var(--font-inter)] font-semibold tracking-wide transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] hover:bg-accent-muted hover:scale-[1.03] hover:shadow-[0_8px_32px_rgba(245,239,224,0.15)] flex-shrink-0"
-          >
-            Start a Project
-            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <a href="/#contact">
+            <Button variant="accent" size="lg">
+              Start a Project
+              <ArrowUpRight className="w-4 h-4" />
+            </Button>
           </a>
         </motion.div>
 
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-12" />
+        {/* Grid: navigation columns */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16 py-14">
+          <div className="col-span-2 md:col-span-1">
+            <a
+              href="/"
+              className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold tracking-tight text-white"
+            >
+              {siteConfig.company.name}
+            </a>
+            <p className="mt-3 text-sm text-white/50 leading-relaxed max-w-xs">
+              {siteConfig.company.tagline}
+            </p>
+          </div>
 
-        {/* Grid: Nav + Services + Contact + Social */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16 mb-16">
-
-          {/* Navigation */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <h4 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold text-foreground mb-5 uppercase tracking-widest">
+          <div>
+            <h4 className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-widest text-white/40 uppercase mb-5">
               Navigate
             </h4>
             <ul className="space-y-3">
@@ -109,75 +90,53 @@ export function Footer() {
                 <li key={item.label}>
                   <a
                     href={item.href}
-                    className="font-[family-name:var(--font-inter)] text-sm text-muted hover:text-foreground transition-colors duration-300"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {item.label}
                   </a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Services */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
-            <h4 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold text-foreground mb-5 uppercase tracking-widest">
-              Services
-            </h4>
-            <ul className="space-y-3">
-              {siteConfig.services.map((service) => (
-                <li key={service.title}>
-                  <span className="font-[family-name:var(--font-inter)] text-sm text-muted">
-                    {service.title}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h4 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold text-foreground mb-5 uppercase tracking-widest">
+          <div>
+            <h4 className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-widest text-white/40 uppercase mb-5">
               Contact
             </h4>
-            <ul className="space-y-4">
-              <li className="flex items-center gap-2.5">
-                <Phone className="w-3.5 h-3.5 text-muted flex-shrink-0" />
-                <a href={`tel:${siteConfig.contact.phone}`} className="font-[family-name:var(--font-inter)] text-sm text-muted hover:text-foreground transition-colors duration-300">
+            <ul className="space-y-3 text-sm text-white/70">
+              <li>
+                <a
+                  href={`tel:${siteConfig.contact.phone}`}
+                  className="flex items-center gap-2 hover:text-white transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5" />
                   {siteConfig.contact.phone}
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Mail className="w-3.5 h-3.5 text-muted flex-shrink-0" />
-                <a href={`mailto:${siteConfig.contact.email}`} className="font-[family-name:var(--font-inter)] text-sm text-muted hover:text-foreground transition-colors duration-300 break-all">
-                  {siteConfig.contact.email}
+              <li>
+                <a
+                  href={`mailto:${siteConfig.contact.email}`}
+                  className="flex items-center gap-2 hover:text-white transition-colors break-all"
+                >
+                  <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="truncate">{siteConfig.contact.email}</span>
                 </a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-3.5 h-3.5 text-muted flex-shrink-0 mt-0.5" />
-                <address className="font-[family-name:var(--font-inter)] text-sm text-muted not-italic leading-relaxed">
-                  {siteConfig.contact.address.street}<br />
-                  {siteConfig.contact.address.city}, {siteConfig.contact.address.state} {siteConfig.contact.address.zip}
+              <li className="flex items-start gap-2">
+                <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                <address className="not-italic leading-relaxed">
+                  {siteConfig.contact.address.street}
+                  <br />
+                  {siteConfig.contact.address.city}, {siteConfig.contact.address.state}{" "}
+                  {siteConfig.contact.address.zip}
                 </address>
               </li>
             </ul>
-          </motion.div>
+          </div>
 
-          {/* Social */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.25 }}
-          >
-            <h4 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold text-foreground mb-5 uppercase tracking-widest">
-              Follow Us
+          <div>
+            <h4 className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-widest text-white/40 uppercase mb-5">
+              Follow
             </h4>
             <ul className="space-y-3">
               {Object.entries(siteConfig.social).map(([platform, url]) => (
@@ -186,61 +145,29 @@ export function Footer() {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2.5 font-[family-name:var(--font-inter)] text-sm text-muted hover:text-foreground transition-colors duration-300"
+                    className="group inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                   >
                     <SocialIcon platform={platform} />
                     <span>{platformLabels[platform] || platform}</span>
-                    <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+                    <ArrowUpRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                   </a>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Certifications */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-wrap gap-3 mb-12"
-        >
-          {siteConfig.footer.certifications.map((cert) => (
-            <span
-              key={cert}
-              className="inline-flex items-center rounded-full border border-border-subtle bg-surface/40 px-4 py-1.5 font-[family-name:var(--font-inter)] text-xs text-muted tracking-wide"
-            >
-              {cert}
-            </span>
-          ))}
-        </motion.div>
-
-        {/* Bottom bar */}
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="font-[family-name:var(--font-inter)] text-xs text-muted"
-          >
-            {siteConfig.footer.copyright}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex items-center gap-6"
-          >
-            <a href="#" className="font-[family-name:var(--font-inter)] text-xs text-muted hover:text-foreground transition-colors">
-              Privacy Policy
+        {/* Bottom */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
+          <p className="text-xs text-white/40">{siteConfig.footer.copyright}</p>
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-xs text-white/40 hover:text-white transition-colors">
+              Privacy
             </a>
-            <a href="#" className="font-[family-name:var(--font-inter)] text-xs text-muted hover:text-foreground transition-colors">
-              Terms of Service
+            <a href="#" className="text-xs text-white/40 hover:text-white transition-colors">
+              Terms
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </footer>

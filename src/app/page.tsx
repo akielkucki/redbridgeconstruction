@@ -19,7 +19,6 @@ export default function Home() {
         <Services />
         <Portfolio />
         <About />
-        <Testimonials />
         <CTA />
         <Contact />
       </main>

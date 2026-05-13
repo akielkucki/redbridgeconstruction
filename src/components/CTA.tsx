@@ -1,89 +1,88 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { siteConfig } from "@/components/index";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function CTA() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section className="relative py-32 overflow-hidden" ref={ref}>
-      {/* Contrasting background */}
-      <div className="absolute inset-0 bg-foreground" />
+    <section className="relative py-28 md:py-36 overflow-hidden bg-surface-muted">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden bg-foreground">
+          {/* Background image */}
+          <div className="absolute inset-0 opacity-[0.18]">
+            <Image
+              src="/ctabackground.jpg"
+              alt=""
+              fill
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/30" />
 
-      {/* Pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.5]">
-        <div
-          className="w-full h-full bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url(/ctabackground.jpg)",
-          }}
-        />
-      </div>
+          {/* Content */}
+          <div className="relative px-8 md:px-16 lg:px-24 py-20 md:py-28 max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="flex items-center gap-3 mb-6"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+              <span className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-[0.22em] text-white/70 uppercase">
+                Ready to build?
+              </span>
+            </motion.div>
 
-      {/* Decorative elements */}
-      <motion.div
-        initial={{ opacity: 0, x: -100 }}
-        animate={isInView ? { opacity: 0.05, x: 0 } : {}}
-        transition={{ duration: 1 }}
-        className="absolute top-0 left-0 w-1/3 h-full bg-background clip-sharp-right"
-      />
-      <motion.div
-        initial={{ opacity: 0, x: 100 }}
-        animate={isInView ? { opacity: 0.05, x: 0 } : {}}
-        transition={{ duration: 1 }}
-        className="absolute top-0 right-0 w-1/3 h-full bg-background clip-sharp-left"
-      />
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-white mb-6"
+            >
+              {siteConfig.cta.headline}
+            </motion.h2>
 
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-8 text-center">
-        {/* Large decorative text */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={isInView ? { opacity: 0.14, scale: 1 } : {}}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        >
-          <span className="font-[family-name:var(--font-space-grotesk)] text-[16.5vw] font-bold text-background whitespace-nowrap">
-            LET&apos;S BUILD
-          </span>
-        </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="font-[family-name:var(--font-inter)] text-lg text-white/70 leading-relaxed max-w-xl mb-10"
+            >
+              {siteConfig.cta.subheadline}
+            </motion.p>
 
-        {/* Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="relative z-10"
-        >
-          <h2 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-background mb-6">
-            {siteConfig.cta.headline}
-          </h2>
-          <p className="font-[family-name:var(--font-inter)] text-lg md:text-xl text-background/60 max-w-2xl mx-auto mb-12">
-            {siteConfig.cta.subheadline}
-          </p>
-
-          <motion.a
-            href={siteConfig.cta.buttonLink}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="inline-flex items-center justify-center px-10 py-4 bg-background text-foreground font-[family-name:var(--font-inter)] text-sm font-semibold tracking-wide uppercase transition-all duration-500 hover:bg-background/80"
-          >
-            <span>{siteConfig.cta.buttonText}</span>
-            <svg className="ml-3 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </motion.a>
-        </motion.div>
-
-        {/* Corner decorations */}
-        <div className="absolute top-8 left-8 w-16 h-16 border-t-2 border-l-2 border-background/10" />
-        <div className="absolute top-8 right-8 w-16 h-16 border-t-2 border-r-2 border-background/10" />
-        <div className="absolute bottom-8 left-8 w-16 h-16 border-b-2 border-l-2 border-background/10" />
-        <div className="absolute bottom-8 right-8 w-16 h-16 border-b-2 border-r-2 border-background/10" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-3"
+            >
+              <a href={siteConfig.cta.buttonLink}>
+                <Button variant="accent" size="lg">
+                  {siteConfig.cta.buttonText}
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </a>
+              <a href={`tel:${siteConfig.contact.phone}`}>
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="text-white hover:bg-white/10"
+                >
+                  Or call {siteConfig.contact.phone}
+                </Button>
+              </a>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
