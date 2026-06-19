@@ -75,8 +75,8 @@ export function About() {
           >
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-border shadow-xl">
               <Image
-                src="https://images.pexels.com/photos/7031607/pexels-photo-7031607.jpeg?auto=compress&cs=tinysrgb&w=1260&h=1575&dpr=2"
-                alt="Red Bridge Construction project"
+                src="/portfolio/bob_house.jpg"
+                alt={`${siteConfig.company.name} custom home in ${siteConfig.contact.serviceArea}`}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

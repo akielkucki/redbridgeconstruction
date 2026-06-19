@@ -161,10 +161,10 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
           <p className="text-xs text-white/40">{siteConfig.footer.copyright}</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-xs text-white/40 hover:text-white transition-colors">
+            <a href="/privacy" className="text-xs text-white/40 hover:text-white transition-colors">
               Privacy
             </a>
-            <a href="#" className="text-xs text-white/40 hover:text-white transition-colors">
+            <a href="/terms" className="text-xs text-white/40 hover:text-white transition-colors">
               Terms
             </a>
           </div>

@@ -17,6 +17,7 @@ import {
   Clock,
   Award,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import { siteConfig } from "@/components/index";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,8 @@ const TOTAL_STEPS = 3;
 export function Contact() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<FormData>({
     projectType: "",
     budget: "",
@@ -90,15 +93,43 @@ export function Contact() {
     return false;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canAdvance()) return;
+    if (!canAdvance() || submitting) return;
     if (step < TOTAL_STEPS - 1) {
+      setError(null);
       setStep((s) => s + 1);
       return;
     }
-    console.log("Contact form submission:", data);
-    setSubmitted(true);
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        setError(
+          payload?.error ??
+            "We couldn't send your message. Please try again or call us directly.",
+        );
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError(
+        "We couldn't reach our server. Check your connection and try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const progress = ((step + 1) / TOTAL_STEPS) * 100;
@@ -265,6 +296,21 @@ export function Contact() {
                       />
                     )}
 
+                    {/* Error message */}
+                    <AnimatePresence>
+                      {error && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          role="alert"
+                          className="mt-6 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+                        >
+                          {error}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+
                     {/* Footer actions */}
                     <div className="mt-8 flex items-center justify-between gap-4">
                       {step > 0 ? (
@@ -273,6 +319,7 @@ export function Contact() {
                           variant="ghost"
                           size="md"
                           onClick={() => setStep((s) => s - 1)}
+                          disabled={submitting}
                         >
                           <ArrowLeft className="w-4 h-4" />
                           Back
@@ -287,11 +334,20 @@ export function Contact() {
                         type="submit"
                         variant="accent"
                         size="lg"
-                        disabled={!canAdvance()}
-                        className={cn(!canAdvance() && "opacity-60")}
+                        disabled={!canAdvance() || submitting}
+                        className={cn((!canAdvance() || submitting) && "opacity-60")}
                       >
-                        {step === TOTAL_STEPS - 1 ? "Send Inquiry" : "Continue"}
-                        <ArrowRight className="w-4 h-4" />
+                        {submitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Sending…
+                          </>
+                        ) : (
+                          <>
+                            {step === TOTAL_STEPS - 1 ? "Send Inquiry" : "Continue"}
+                            <ArrowRight className="w-4 h-4" />
+                          </>
+                        )}
                       </Button>
                     </div>
                   </motion.form>

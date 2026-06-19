@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { siteConfig } from "@/components/index";
 import { ArrowRight, Star, ShieldCheck } from "lucide-react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -26,16 +25,8 @@ const fadeUp = {
 export function Hero() {
   return (
     <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-background pt-28 pb-20">
-      {/* Background image */}
+      {/* Layered background — pure CSS, no network request for a fast LCP */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="https://images.pexels.com/photos/8830259/pexels-photo-8830259.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
-          alt=""
-          fill
-          className="object-cover opacity-[0.10]"
-          sizes="100vw"
-          priority
-        />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
         <div className="absolute inset-0 grid-pattern opacity-40" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_40%,rgba(184,70,46,0.05),transparent)]" />

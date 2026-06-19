@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { siteConfig } from "@/components/index";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,14 +14,14 @@ function getSubmenuItems(label: string) {
     return siteConfig.services.map((s) => ({
       title: s.title,
       description: s.description,
-      href: `/#services`,
+      href: `/${s.slug}-${siteConfig.contact.serviceAreaSlug}`,
     }));
   }
   if (label === "Projects") {
     return siteConfig.portfolio.slice(0, 4).map((p) => ({
       title: p.title,
       description: p.category,
-      href: `/#portfolio`,
+      href: `/projects/${p.slug}`,
     }));
   }
   return null;
@@ -79,9 +80,9 @@ function DesktopDropdown({ item }: { item: NavItem }) {
             className="absolute top-full left-1/2 -translate-x-1/2 pt-3"
           >
             <div className="rounded-2xl border border-border bg-white shadow-xl overflow-hidden min-w-[300px] p-2">
-              {submenu.map((sub, i) => (
-                <a
-                  key={i}
+              {submenu.map((sub) => (
+                <Link
+                  key={sub.href}
                   href={sub.href}
                   className="block px-3 py-2.5 rounded-xl hover:bg-surface-muted transition-colors group/item"
                 >
@@ -91,7 +92,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
                   <div className="text-xs text-muted-foreground mt-0.5">
                     {sub.description}
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </motion.div>

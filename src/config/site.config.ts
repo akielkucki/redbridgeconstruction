@@ -2,6 +2,9 @@
 // All variables defined here are used across the entire website
 
 export const siteConfig = {
+  // Canonical public URL (used for SEO: metadata, sitemap, robots, OG images)
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://www.redbridgeconstructionllc.com").replace(/\/$/, ""),
+
   // Company Information
   company: {
     name: "Red Bridge Construction",

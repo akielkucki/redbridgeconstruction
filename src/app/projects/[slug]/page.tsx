@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/JsonLd";
+import { caseStudySchema, breadcrumbSchema } from "@/lib/jsonLd";
 
 type Project = (typeof siteConfig.portfolio)[number];
 
@@ -30,13 +32,21 @@ export async function generateMetadata({
 
   const { caseStudy } = project;
   return {
-    title: `${caseStudy.h1} | ${siteConfig.company.name}`,
+    title: caseStudy.h1,
     description: caseStudy.metaDescription,
+    alternates: { canonical: `/projects/${slug}` },
     openGraph: {
       title: caseStudy.h1,
       description: caseStudy.metaDescription,
+      url: `/projects/${slug}`,
       type: "article",
       images: caseStudy.images.map((img) => ({ url: img.src, alt: img.alt })),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: caseStudy.h1,
+      description: caseStudy.metaDescription,
+      images: caseStudy.images.map((img) => img.src),
     },
   };
 }
@@ -55,6 +65,16 @@ export default async function ProjectCaseStudyPage({
 
   return (
     <>
+      <JsonLd
+        data={[
+          caseStudySchema(project),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Projects", path: "/projects" },
+            { name: project.title, path: `/projects/${slug}` },
+          ]),
+        ]}
+      />
       <Navigation />
       <main className="min-h-screen bg-background">
         {/* Header */}

@@ -7,6 +7,12 @@ import { ServiceFeatures } from "@/components/ServiceFeatures";
 import { ServiceProcess } from "@/components/ServiceProcess";
 import { ServiceProjects } from "@/components/ServiceProjects";
 import { ServiceFAQ } from "@/components/ServiceFAQ";
+import { JsonLd } from "@/components/JsonLd";
+import {
+  serviceSchema,
+  faqSchema,
+  breadcrumbSchema,
+} from "@/lib/jsonLd";
 
 function getServiceSlug(serviceSlug: string): string {
   return `${serviceSlug}-${siteConfig.contact.serviceAreaSlug}`;
@@ -40,10 +46,27 @@ export async function generateMetadata({
   }
 
   const area = siteConfig.contact.serviceArea;
+  const path = `/${slug}`;
+  const title = `${service.title} in ${area}`;
+  const description = `${service.description} Professional ${service.title.toLowerCase()} services across ${area}, ${siteConfig.contact.address.state}.`;
 
   return {
-    title: `${service.title} in ${area} | ${siteConfig.company.fullName}`,
-    description: `${service.description} Professional ${service.title.toLowerCase()} services across ${area}, ${siteConfig.contact.address.state}.`,
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title: `${title} | ${siteConfig.company.fullName}`,
+      description,
+      url: path,
+      type: "website",
+      images: [{ url: service.heroImage, alt: `${service.title} in ${area}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${siteConfig.company.name}`,
+      description,
+      images: [service.heroImage],
+    },
   };
 }
 
@@ -60,9 +83,21 @@ export default async function ServicePage({
   }
 
   const area = siteConfig.contact.serviceArea;
+  const path = `/${slug}`;
 
   return (
     <>
+      <JsonLd
+        data={[
+          serviceSchema(service, area),
+          faqSchema(service),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Services", path: "/#services" },
+            { name: service.title, path },
+          ]),
+        ]}
+      />
       <Navigation />
       <main>
         <ServiceHero service={service} area={area} />

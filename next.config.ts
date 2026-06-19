@@ -1,22 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'picsum.photos',
-                port: '',
-                pathname: '/**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'images.pexels.com',
-                port: '',
-                pathname: '/**',
-            },
-        ],
-    },
+  images: {
+    // Serve modern, smaller formats where the browser supports them.
+    formats: ["image/avif", "image/webp"],
+  },
 };
 
 export default nextConfig;

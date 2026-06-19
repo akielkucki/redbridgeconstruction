@@ -1,19 +1,34 @@
 import type { Metadata } from "next";
-import {Playfair_Display, DM_Sans, Brawler, Geist, Noto_Sans } from "next/font/google";
+import {
+  Brawler,
+  DM_Sans,
+  Noto_Sans,
+  Playfair_Display,
+} from "next/font/google";
 import "./globals.css";
+import type React from "react";
 import { siteConfig } from "@/components/index";
-import React from "react";
+import { JsonLd } from "@/components/JsonLd";
+import { organizationSchema, websiteSchema } from "@/lib/jsonLd";
 import { cn } from "@/lib/utils";
 
-const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
+const playfairDisplayHeading = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
+});
 
-const notoSans = Noto_Sans({subsets:['latin'],variable:'--font-sans'});
+const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 const playfair = Brawler({
   variable: "--font-space-grotesk",
-    subsets: ["latin"],
-  weight: "400"
-
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
 });
 
 const dmSans = DM_Sans({
@@ -23,21 +38,60 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: `${siteConfig.company.fullName} | Contemporary Renovation Specialists`,
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.company.fullName} | New Hope & Bucks County Builder`,
+    template: `%s | ${siteConfig.company.name}`,
+  },
   description: siteConfig.company.description,
+  applicationName: siteConfig.company.fullName,
   keywords: [
-    "renovations",
-    "home renovation",
+    "construction Bucks County",
+    "home remodeling New Hope",
+    "custom home builder Bucks County",
     "kitchen remodel",
     "bathroom remodel",
-    "contemporary design",
-    "luxury renovations",
+    "historic restoration",
+    "general contractor",
     siteConfig.contact.address.city,
+    siteConfig.contact.serviceArea,
   ],
+  authors: [{ name: siteConfig.company.fullName }],
+  creator: siteConfig.company.fullName,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: siteConfig.company.fullName,
+    title: `${siteConfig.company.fullName} | New Hope & Bucks County Builder`,
     description: siteConfig.company.description,
+    url: siteConfig.url,
+    siteName: siteConfig.company.fullName,
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/portfolio/bob_house.jpg",
+        width: 1200,
+        height: 800,
+        alt: `${siteConfig.company.fullName} — custom home in ${siteConfig.contact.serviceArea}`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.company.fullName} | New Hope & Bucks County Builder`,
+    description: siteConfig.company.tagline,
+    images: ["/portfolio/bob_house.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -47,10 +101,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("scroll-smooth", "font-sans", notoSans.variable, playfairDisplayHeading.variable)}>
+    <html
+      lang="en"
+      className={cn(
+        "scroll-smooth",
+        "font-sans",
+        notoSans.variable,
+        playfairDisplayHeading.variable,
+      )}
+    >
       <body
         className={`${playfair.variable} ${dmSans.variable} antialiased bg-background text-foreground`}
       >
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
         {children}
       </body>
     </html>
