@@ -83,7 +83,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const to = process.env.CONTACT_TO_EMAIL || siteConfig.contact.email;
+  const to = (process.env.CONTACT_TO_EMAIL || siteConfig.contact.email)
+    .split(",")
+    .map((addr) => addr.trim())
+    .filter(Boolean);
   const from =
     process.env.CONTACT_FROM_EMAIL ||
     `${siteConfig.company.name} <onboarding@resend.dev>`;
@@ -138,7 +141,7 @@ export async function POST(req: Request) {
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from,
-      to: [to],
+      to,
       replyTo: email,
       subject,
       html,

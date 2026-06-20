@@ -27,7 +27,7 @@ function getSubmenuItems(label: string) {
   return null;
 }
 
-function DesktopDropdown({ item }: { item: NavItem }) {
+function DesktopDropdown({ item, className }: { item: NavItem, className?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const submenu = getSubmenuItems(item.label);
@@ -44,7 +44,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
     return (
       <a
         href={item.href}
-        className="relative font-[family-name:var(--font-inter)] text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 group"
+        className={cn("relative font-[family-name:var(--font-inter)] text-sm font-medium transition-colors duration-200 group", className)}
       >
         {item.label}
         <span className="absolute -bottom-1 left-0 w-0 h-px bg-[var(--accent)] transition-all duration-300 group-hover:w-full" />
@@ -56,7 +56,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
     <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <button
         type="button"
-        className="font-[family-name:var(--font-inter)] text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200 inline-flex items-center gap-1"
+        className={cn("font-[family-name:var(--font-inter)] text-sm font-medium transition-colors duration-200 inline-flex items-center gap-1", className)}
       >
         {item.label}
         <svg
@@ -132,16 +132,16 @@ export function Navigation() {
                 <span
                   className={cn(
                     "font-[family-name:var(--font-space-grotesk)] font-bold tracking-tight text-foreground transition-all duration-500",
-                    isScrolled ? "text-base" : "text-xl",
+                    isScrolled ? "text-base" : "text-xl text-white",
                   )}
                 >
                   {siteConfig.company.name}
                 </span>
               </a>
 
-              <div className="hidden md:flex items-center gap-7">
+              <div className="hidden md:flex items-center justify-center gap-7">
                 {siteConfig.navigation.map((item) => (
-                  <DesktopDropdown key={item.label} item={item} />
+                  <DesktopDropdown key={item.label} item={item} className={isScrolled ? "text-foreground/70 hover:text-foreground " : "text-white"} />
                 ))}
                 <a href="/#contact">
                   <Button variant="accent" size="sm">
