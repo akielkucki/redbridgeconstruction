@@ -181,6 +181,8 @@ select:focus-visible {
 @theme inline {
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-wipe-left: wipe-left 0.9s cubic-bezier(0.77, 0, 0.18, 1) forwards;
+  --animate-wipe-right: wipe-right 0.9s cubic-bezier(0.77, 0, 0.18, 1) forwards;
 
   @keyframes marquee {
     from {
@@ -198,6 +200,17 @@ select:focus-visible {
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
+
+  /* Hero reveal: accent panel covers the text, then wipes off to reveal it */
+  @keyframes wipe-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-101%); }
+  }
+  @keyframes wipe-right {
+    from { transform: translateX(0); }
+    to   { transform: translateX(101%); }
+  }
+
 }
 
 /* Fade-in utility */
@@ -208,7 +221,6 @@ select:focus-visible {
 .animate-fade-in-up {
   animation: fade-in-up 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
-
 /* Responsive font scale */
 @media (max-width: 768px) {
   html { font-size: 15px; }
