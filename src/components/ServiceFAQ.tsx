@@ -1,13 +1,8 @@
-"use client";
-
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
-import { siteConfig } from "@/components/index";
+import { Reveal } from "@/components/ui/reveal";
+import { Rule } from "@/components/ui/rule";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { cn } from "@/lib/utils";
-
-const EASE = [0.19, 1, 0.22, 1] as const;
+import type { siteConfig } from "@/config/site.config";
 
 interface ServiceFAQProps {
   service: (typeof siteConfig.services)[number];
@@ -15,81 +10,45 @@ interface ServiceFAQProps {
 }
 
 export function ServiceFAQ({ service, area }: ServiceFAQProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
-    <section className="relative py-28 md:py-36 bg-background overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="FAQ"
-          title={
-            <>
-              {service.title} in {area},
-              <br />
-              <span className="text-accent-gradient">answered.</span>
-            </>
-          }
-          description="Quick answers to the questions homeowners ask us most. Don't see yours? We're a phone call away."
-          className="mb-14 md:mb-16"
-        />
+    <section>
+      <div className="shell">
+        <Rule />
+        <div className="pt-16 md:pt-24 pb-14 md:pb-16">
+          <SectionHeading
+            title="Common questions."
+            description={`What homeowners ask us most about ${service.title.toLowerCase()} in ${area}. Don't see yours? We're a phone call away.`}
+          />
+        </div>
 
-        <ul className="divide-y divide-border border-y border-border">
-          {service.faqs.map((item, index) => {
-            const isOpen = openIndex === index;
-            return (
-              <li key={item.q}>
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full flex items-start gap-6 py-7 text-left group"
-                  aria-expanded={isOpen}
-                >
-                  <span className="font-[family-name:var(--font-space-grotesk)] text-sm font-medium tabular-nums tracking-[0.22em] text-muted-foreground pt-1 min-w-[42px]">
-                    0{index + 1}
+        <Reveal className="pb-24 md:pb-32">
+          <div className="max-w-4xl">
+            {service.faqs.map((item, index) => (
+              <details
+                key={item.q}
+                className="group border-t border-line last:border-b"
+                name="faq"
+              >
+                <summary className="flex cursor-pointer items-baseline gap-6 py-6 list-none [&::-webkit-details-marker]:hidden">
+                  <span className="meta text-grey min-w-8">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span
-                    className={cn(
-                      "flex-1 font-[family-name:var(--font-space-grotesk)] text-lg md:text-xl font-semibold leading-snug transition-colors duration-300",
-                      isOpen
-                        ? "text-foreground"
-                        : "text-foreground/85 group-hover:text-foreground",
-                    )}
-                  >
+                  <span className="flex-1 text-lg md:text-xl font-medium tracking-tight text-ink">
                     {item.q}
                   </span>
-                  <motion.span
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ duration: 0.45, ease: EASE }}
-                    className={cn(
-                      "mt-1 flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-colors duration-300",
-                      isOpen
-                        ? "bg-[var(--accent)] text-white"
-                        : "bg-surface-muted text-foreground group-hover:bg-foreground group-hover:text-background",
-                    )}
-                  >
-                    <Plus className="w-4 h-4" strokeWidth={2.25} />
-                  </motion.span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.5, ease: EASE }}
-                      className="overflow-hidden"
-                    >
-                      <p className="pl-[66px] pr-14 pb-8 font-[family-name:var(--font-inter)] text-muted-foreground leading-relaxed max-w-2xl">
-                        {item.a}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </li>
-            );
-          })}
-        </ul>
+                  <Plus
+                    aria-hidden
+                    className="h-5 w-5 shrink-0 self-center text-grey transition-transform duration-300 group-open:rotate-45 group-open:text-red"
+                    strokeWidth={1.5}
+                  />
+                </summary>
+                <p className="pb-8 pl-14 pr-11 max-w-2xl text-grey leading-relaxed">
+                  {item.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );

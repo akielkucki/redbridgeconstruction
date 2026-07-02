@@ -1,37 +1,28 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
 import { useState } from "react";
-import {
-  Phone,
-  Mail,
-  MapPin,
-  Check,
-  ArrowRight,
-  ArrowLeft,
-  Hammer,
-  Home,
-  Landmark,
-  Wrench,
-  ShieldCheck,
-  Clock,
-  Award,
-  Sparkles,
-  Loader2,
-} from "lucide-react";
-import { siteConfig } from "@/components/index";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { siteConfig } from "@/config/site.config";
 import { cn } from "@/lib/utils";
 
 const PROJECT_TYPES = [
-  { value: "Home Remodeling", label: "Remodel", icon: Hammer, desc: "Kitchen, bath, or full home" },
-  { value: "Custom Home Building", label: "New Build", icon: Home, desc: "Ground-up construction" },
-  { value: "Historic & Property Restoration", label: "Restoration", icon: Landmark, desc: "Period-accurate work" },
-  { value: "Other", label: "Something else", icon: Wrench, desc: "Tell us about it" },
+  {
+    value: "Home Remodeling",
+    label: "Remodel",
+    desc: "Kitchen, bath, or full home",
+  },
+  {
+    value: "Custom Home Building",
+    label: "New build",
+    desc: "Ground-up construction",
+  },
+  {
+    value: "Historic & Property Restoration",
+    label: "Restoration",
+    desc: "Period-accurate work",
+  },
+  { value: "Other", label: "Something else", desc: "Tell us about it" },
 ];
 
 const BUDGET_RANGES = [
@@ -50,11 +41,20 @@ const TIMELINES = [
   "Just exploring",
 ];
 
-const TRUST_POINTS = [
-  { icon: ShieldCheck, text: "Licensed & Insured" },
-  { icon: Award, text: `${siteConfig.company.yearsExperience}+ years` },
-  { icon: Clock, text: "On-time delivery" },
-];
+const CONTACT_ROWS = [
+  {
+    label: "Call",
+    value: siteConfig.contact.phone,
+    href: `tel:${siteConfig.contact.phone}`,
+  },
+  {
+    label: "Email",
+    value: siteConfig.contact.email,
+    href: `mailto:${siteConfig.contact.email}`,
+  },
+  { label: "Visit", value: siteConfig.contact.address.full },
+  { label: "Hours", value: siteConfig.contact.hours },
+] as const;
 
 type FormData = {
   projectType: string;
@@ -67,12 +67,15 @@ type FormData = {
 };
 
 const TOTAL_STEPS = 3;
+const STEP_NAMES = ["What you need", "Scope & timing", "Your details"];
+
+type Status = "idle" | "sending" | "error";
 
 export function Contact() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const [data, setData] = useState<FormData>({
     projectType: "",
     budget: "",
@@ -95,180 +98,108 @@ export function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canAdvance() || submitting) return;
+    if (!canAdvance() || status === "sending") return;
     if (step < TOTAL_STEPS - 1) {
-      setError(null);
       setStep((s) => s + 1);
       return;
     }
 
-    setSubmitting(true);
-    setError(null);
+    setStatus("sending");
+    setErrorMsg("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
       if (!res.ok) {
-        const payload = (await res.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        setError(
-          payload?.error ??
-            "We couldn't send your message. Please try again or call us directly.",
+        const payload = await res.json().catch(() => null);
+        throw new Error(
+          payload?.error ?? "Something went wrong. Please try again.",
         );
-        return;
       }
-
       setSubmitted(true);
-    } catch {
-      setError(
-        "We couldn't reach our server. Check your connection and try again.",
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
       );
-    } finally {
-      setSubmitting(false);
     }
   };
 
-  const progress = ((step + 1) / TOTAL_STEPS) * 100;
-
   return (
-    <section id="contact" className="relative py-28 md:py-36 bg-background overflow-hidden">
-      <div className="absolute inset-0 grid-pattern opacity-50 pointer-events-none" />
+    <section id="contact" className="scroll-mt-16 bg-panel text-paper">
+      {/* The red line runs full-width at the funnel's end */}
+      <div aria-hidden className="h-[2px] w-full bg-red" />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20 items-start">
-
-          {/* ─── Left: persuasive pitch ─── */}
-          <div className="lg:sticky lg:top-28">
-            <Badge variant="soft" className="mb-6">
-              <Sparkles className="w-3 h-3" />
-              Free Consultation
-            </Badge>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-foreground mb-6"
-            >
-              Tell us about
+      <div className="shell py-20 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-16">
+          {/* Left: pitch + contact table */}
+          <div className="lg:col-span-5">
+            <h2 className="display text-4xl md:text-5xl lg:text-6xl text-paper">
+              Tell us what
               <br />
-              your project.
-            </motion.h2>
-
-            <p className="font-[family-name:var(--font-inter)] text-lg text-muted-foreground leading-relaxed mb-10 max-w-md">
-              Three quick steps. No pressure, no sales calls — just a real
-              conversation about what you want to build.
+              you’re building.
+            </h2>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-paper/60">
+              Three quick steps and no pressure. This is a real conversation
+              about your New Hope or Bucks County project, answered within one
+              business day.
             </p>
 
-            {/* Trust strip */}
-            <div className="grid grid-cols-3 gap-4 mb-10 pb-10 border-b border-border">
-              {TRUST_POINTS.map(({ icon: Icon, text }) => (
-                <div key={text} className="flex flex-col items-start gap-2">
-                  <Icon className="w-5 h-5 text-[var(--accent)]" />
-                  <span className="font-[family-name:var(--font-inter)] text-xs font-medium text-foreground leading-tight">
-                    {text}
-                  </span>
+            <dl className="mt-12">
+              {CONTACT_ROWS.map((row) => (
+                <div
+                  key={row.label}
+                  className="flex items-baseline justify-between gap-6 border-t border-white/12 py-4"
+                >
+                  <dt className="meta text-paper/50">{row.label}</dt>
+                  <dd className="text-right text-sm text-paper">
+                    {"href" in row && row.href ? (
+                      <a
+                        href={row.href}
+                        className="hover:text-red transition-colors break-all"
+                      >
+                        {row.value}
+                      </a>
+                    ) : (
+                      row.value
+                    )}
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
 
-            {/* Contact methods */}
-            <div className="space-y-4">
-              <a
-                href={`tel:${siteConfig.contact.phone}`}
-                className="flex items-center gap-4 p-4 rounded-xl border border-border bg-surface hover:border-foreground/30 transition-colors group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-surface-muted flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-4 h-4 text-foreground" />
-                </div>
-                <div>
-                  <div className="text-xs text-muted">Call directly</div>
-                  <div className="font-[family-name:var(--font-space-grotesk)] font-semibold text-foreground">
-                    {siteConfig.contact.phone}
-                  </div>
-                </div>
-              </a>
-
-              <a
-                href={`mailto:${siteConfig.contact.email}`}
-                className="flex items-center gap-4 p-4 rounded-xl border border-border bg-surface hover:border-foreground/30 transition-colors"
-              >
-                <div className="w-10 h-10 rounded-lg bg-surface-muted flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-4 h-4 text-foreground" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs text-muted">Email</div>
-                  <div className="font-[family-name:var(--font-space-grotesk)] font-semibold text-foreground text-sm break-all">
-                    {siteConfig.contact.email}
-                  </div>
-                </div>
-              </a>
-
-              <div className="flex items-center gap-4 p-4 rounded-xl border border-border bg-surface">
-                <div className="w-10 h-10 rounded-lg bg-surface-muted flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-4 h-4 text-foreground" />
-                </div>
-                <div>
-                  <div className="text-xs text-muted">Visit</div>
-                  <address className="font-[family-name:var(--font-space-grotesk)] font-semibold text-foreground text-sm not-italic">
-                    {siteConfig.contact.address.full}
-                  </address>
-                </div>
-              </div>
-            </div>
+            <p className="meta mt-8 text-paper/40">
+              Licensed &amp; insured · {siteConfig.company.yearsExperience}+
+              years · On-time delivery
+            </p>
           </div>
 
-          {/* ─── Right: form card ─── */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            <div className="relative rounded-3xl bg-white border border-border shadow-[0_24px_72px_-32px_rgba(20,17,13,0.18)] p-6 md:p-10 overflow-hidden">
-
-              {/* Progress bar */}
-              {!submitted && (
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-wider uppercase text-muted-foreground">
-                      Step {step + 1} of {TOTAL_STEPS}
-                    </span>
-                    <span className="font-[family-name:var(--font-inter)] text-xs font-medium text-[var(--accent)]">
-                      {step === 0 && "What you need"}
-                      {step === 1 && "Scope & timing"}
-                      {step === 2 && "Your details"}
-                    </span>
-                  </div>
-                  <div className="h-1 w-full bg-surface-muted rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-[var(--accent)] rounded-full"
-                      initial={false}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                    />
-                  </div>
+          {/* Right: form */}
+          <div className="lg:col-span-6 lg:col-start-7">
+            {submitted ? (
+              <SuccessState name={data.name} />
+            ) : (
+              <>
+                {/* Step meta + progress */}
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="meta text-paper/50">
+                    0{step + 1} / 0{TOTAL_STEPS}
+                  </span>
+                  <span className="meta text-red">{STEP_NAMES[step]}</span>
                 </div>
-              )}
+                <div className="mt-3 h-px w-full bg-white/12">
+                  <div
+                    className="h-[2px] -translate-y-px bg-red transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
+                  />
+                </div>
 
-              <AnimatePresence mode="wait">
-                {submitted ? (
-                  <SuccessState key="success" name={data.name} />
-                ) : (
-                  <motion.form
-                    key={`step-${step}`}
-                    onSubmit={handleSubmit}
-                    initial={{ opacity: 0, x: 16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -16 }}
-                    transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-                  >
+                <form onSubmit={handleSubmit} className="mt-10">
+                  <div key={step} className="animate-step">
                     {step === 0 && (
                       <Step1
                         value={data.projectType}
@@ -295,66 +226,51 @@ export function Contact() {
                         onPhone={(v) => update("phone", v)}
                       />
                     )}
+                  </div>
 
-                    {/* Error message */}
-                    <AnimatePresence>
-                      {error && (
-                        <motion.p
-                          initial={{ opacity: 0, y: -4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -4 }}
-                          role="alert"
-                          className="mt-6 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-                        >
-                          {error}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
+                  {status === "error" && errorMsg && (
+                    <p
+                      role="alert"
+                      className="mt-8 border-l-2 border-red pl-4 text-sm text-paper/80"
+                    >
+                      {errorMsg}
+                    </p>
+                  )}
 
-                    {/* Footer actions */}
-                    <div className="mt-8 flex items-center justify-between gap-4">
-                      {step > 0 ? (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="md"
-                          onClick={() => setStep((s) => s - 1)}
-                          disabled={submitting}
-                        >
-                          <ArrowLeft className="w-4 h-4" />
-                          Back
-                        </Button>
-                      ) : (
-                        <span className="text-xs text-muted">
-                          We&apos;ll never share your info.
-                        </span>
-                      )}
-
+                  <div className="mt-10 flex items-center justify-between gap-4">
+                    {step > 0 ? (
                       <Button
-                        type="submit"
-                        variant="accent"
-                        size="lg"
-                        disabled={!canAdvance() || submitting}
-                        className={cn((!canAdvance() || submitting) && "opacity-60")}
+                        type="button"
+                        variant="ghost-dark"
+                        size="md"
+                        onClick={() => setStep((s) => s - 1)}
+                        disabled={status === "sending"}
                       >
-                        {submitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Sending…
-                          </>
-                        ) : (
-                          <>
-                            {step === TOTAL_STEPS - 1 ? "Send Inquiry" : "Continue"}
-                            <ArrowRight className="w-4 h-4" />
-                          </>
-                        )}
+                        Back
                       </Button>
-                    </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
+                    ) : (
+                      <span className="meta text-paper/40">
+                        We never share your info
+                      </span>
+                    )}
+
+                    <Button
+                      type="submit"
+                      variant="accent"
+                      size="lg"
+                      disabled={!canAdvance() || status === "sending"}
+                    >
+                      {step === TOTAL_STEPS - 1
+                        ? status === "sending"
+                          ? "Sending"
+                          : "Send inquiry"
+                        : "Continue"}
+                    </Button>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </section>
@@ -370,59 +286,42 @@ function Step1({
   onChange: (v: string) => void;
 }) {
   return (
-    <div>
-      <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl md:text-3xl font-bold text-foreground mb-2">
+    <fieldset>
+      <legend className="text-2xl font-medium tracking-tight text-paper">
         What are you building?
-      </h3>
-      <p className="text-muted-foreground text-sm mb-8">
-        Pick the closest fit — we&apos;ll tailor the conversation.
+      </legend>
+      <p className="mt-2 text-sm text-paper/50">
+        Pick the closest fit and we’ll tailor the conversation.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {PROJECT_TYPES.map(({ value: v, label, icon: Icon, desc }) => {
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {PROJECT_TYPES.map(({ value: v, label, desc }) => {
           const active = value === v;
           return (
             <button
               key={v}
               type="button"
               onClick={() => onChange(v)}
+              aria-pressed={active}
               className={cn(
-                "group relative text-left p-5 rounded-xl border transition-all duration-300",
+                "relative border p-5 text-left transition-colors duration-300",
                 active
-                  ? "border-[var(--accent)] bg-[var(--color-accent-soft)] shadow-sm"
-                  : "border-border bg-surface hover:border-foreground/30",
+                  ? "border-red bg-red/10"
+                  : "border-white/15 hover:border-white/40",
               )}
             >
-              <div className="flex items-start gap-3">
-                <div
-                  className={cn(
-                    "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors",
-                    active
-                      ? "bg-[var(--accent)] text-white"
-                      : "bg-surface-muted text-foreground",
-                  )}
-                >
-                  <Icon className="w-5 h-5" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <div className="font-[family-name:var(--font-space-grotesk)] font-semibold text-foreground">
-                    {label}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {desc}
-                  </div>
-                </div>
-              </div>
+              <span className="block font-medium text-paper">{label}</span>
+              <span className="mt-1 block text-xs text-paper/50">{desc}</span>
               {active && (
-                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[var(--accent)] flex items-center justify-center">
-                  <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                </div>
+                <span className="absolute right-4 top-4 flex h-5 w-5 items-center justify-center bg-red">
+                  <Check className="h-3 w-3 text-white" strokeWidth={3} />
+                </span>
               )}
             </button>
           );
         })}
       </div>
-    </div>
+    </fieldset>
   );
 }
 
@@ -444,16 +343,16 @@ function Step2({
 }) {
   return (
     <div>
-      <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl md:text-3xl font-bold text-foreground mb-2">
-        Scope & timing
+      <h3 className="text-2xl font-medium tracking-tight text-paper">
+        Scope &amp; timing
       </h3>
-      <p className="text-muted-foreground text-sm mb-8">
-        Rough estimates are fine — this just helps us prep the right team.
+      <p className="mt-2 text-sm text-paper/50">
+        Rough estimates are fine. This just helps us prep the right team.
       </p>
 
-      <div className="space-y-6">
+      <div className="mt-8 space-y-8">
         <div>
-          <Label>Budget range</Label>
+          <span className="meta block text-paper/50 mb-3">Budget range</span>
           <div className="flex flex-wrap gap-2">
             {BUDGET_RANGES.map((b) => (
               <Pill key={b} active={budget === b} onClick={() => onBudget(b)}>
@@ -464,28 +363,30 @@ function Step2({
         </div>
 
         <div>
-          <Label>Timeline</Label>
+          <span className="meta block text-paper/50 mb-3">Timeline</span>
           <div className="flex flex-wrap gap-2">
             {TIMELINES.map((t) => (
-              <Pill key={t} active={timeline === t} onClick={() => onTimeline(t)}>
+              <Pill
+                key={t}
+                active={timeline === t}
+                onClick={() => onTimeline(t)}
+              >
                 {t}
               </Pill>
             ))}
           </div>
         </div>
 
-        <div>
-          <Label htmlFor="message">
-            Anything else <span className="normal-case font-normal text-muted">(optional)</span>
-          </Label>
-          <Textarea
+        <Field label="Anything else (optional)" htmlFor="message">
+          <textarea
             id="message"
-            rows={4}
+            rows={3}
             value={message}
             onChange={(e) => onMessage(e.target.value)}
             placeholder="Inspiration, must-haves, constraints…"
+            className={fieldClass}
           />
-        </div>
+        </Field>
       </div>
     </div>
   );
@@ -509,55 +410,74 @@ function Step3({
 }) {
   return (
     <div>
-      <h3 className="font-[family-name:var(--font-space-grotesk)] text-2xl md:text-3xl font-bold text-foreground mb-2">
+      <h3 className="text-2xl font-medium tracking-tight text-paper">
         Where can we reach you?
       </h3>
-      <p className="text-muted-foreground text-sm mb-8">
+      <p className="mt-2 text-sm text-paper/50">
         We respond within one business day, every time.
       </p>
 
-      <div className="space-y-5">
-        <div>
-          <Label htmlFor="name">Name</Label>
-          <Input
+      <div className="mt-8 space-y-7">
+        <Field label="Name" htmlFor="name">
+          <input
             id="name"
             required
             value={name}
             onChange={(e) => onName(e.target.value)}
             placeholder="Jane Smith"
+            className={fieldClass}
           />
-        </div>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
+        </Field>
+        <div className="grid sm:grid-cols-2 gap-x-8 gap-y-7">
+          <Field label="Email" htmlFor="email">
+            <input
               id="email"
               type="email"
               required
               value={email}
               onChange={(e) => onEmail(e.target.value)}
               placeholder="jane@example.com"
+              className={fieldClass}
             />
-          </div>
-          <div>
-            <Label htmlFor="phone">
-              Phone <span className="normal-case font-normal text-muted">(optional)</span>
-            </Label>
-            <Input
+          </Field>
+          <Field label="Phone (optional)" htmlFor="phone">
+            <input
               id="phone"
               type="tel"
               value={phone}
               onChange={(e) => onPhone(e.target.value)}
               placeholder="(555) 123-4567"
+              className={fieldClass}
             />
-          </div>
+          </Field>
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── Pill helper ─── */
+const fieldClass =
+  "w-full resize-none border-b border-white/25 bg-transparent py-2.5 text-base text-paper placeholder:text-paper/30 outline-none transition-colors focus:border-red";
+
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label htmlFor={htmlFor} className="meta block text-paper/50 mb-1">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
 function Pill({
   children,
   active,
@@ -571,11 +491,12 @@ function Pill({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
-        "px-4 py-2 rounded-full font-[family-name:var(--font-inter)] text-sm font-medium transition-all duration-200",
+        "border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors duration-200",
         active
-          ? "bg-foreground text-background border border-foreground"
-          : "bg-surface text-foreground border border-border hover:border-foreground/30",
+          ? "border-red bg-red text-white"
+          : "border-white/15 text-paper/80 hover:border-white/40",
       )}
     >
       {children}
@@ -583,37 +504,26 @@ function Pill({
   );
 }
 
-/* ─── Success state ─── */
 function SuccessState({ name }: { name: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-      className="text-center py-8"
-    >
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
-        className="w-16 h-16 mx-auto mb-6 rounded-full bg-[var(--accent)] flex items-center justify-center"
-      >
-        <Check className="w-8 h-8 text-white" strokeWidth={3} />
-      </motion.div>
-      <h3 className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-foreground mb-3">
+    <div className="animate-step flex h-full flex-col justify-center py-10">
+      <span className="flex h-12 w-12 items-center justify-center bg-red">
+        <Check className="h-6 w-6 text-white" strokeWidth={2.5} />
+      </span>
+      <h3 className="display mt-8 text-3xl md:text-4xl text-paper">
         Thanks{name ? `, ${name.split(" ")[0]}` : ""}.
       </h3>
-      <p className="text-muted-foreground max-w-sm mx-auto mb-8">
-        We&apos;ve received your inquiry and will follow up within one business
-        day. Talk soon.
+      <p className="mt-4 max-w-sm text-paper/60 leading-relaxed">
+        We’ve received your inquiry and sent a copy to your inbox. A member of
+        the Red Bridge team here in Bucks County will follow up within one
+        business day. Talk soon.
       </p>
       <a
         href="#portfolio"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] hover:underline"
+        className="meta mt-8 inline-flex w-fit items-center gap-2 text-red hover:text-paper transition-colors"
       >
-        Browse recent projects
-        <ArrowRight className="w-4 h-4" />
+        Browse recent projects →
       </a>
-    </motion.div>
+    </div>
   );
 }

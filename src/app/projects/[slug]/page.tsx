@@ -2,14 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, MapPin, Hammer, Target, CheckCircle2 } from "lucide-react";
-import { siteConfig } from "@/components/index";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
-import { JsonLd } from "@/components/JsonLd";
-import { caseStudySchema, breadcrumbSchema } from "@/lib/jsonLd";
+import { Navigation } from "@/components/Navigation";
+import { buttonVariants } from "@/components/ui/button";
+import { Rule } from "@/components/ui/rule";
+import { siteConfig } from "@/config/site.config";
 
 type Project = (typeof siteConfig.portfolio)[number];
 
@@ -38,15 +35,8 @@ export async function generateMetadata({
     openGraph: {
       title: caseStudy.h1,
       description: caseStudy.metaDescription,
-      url: `/projects/${slug}`,
       type: "article",
       images: caseStudy.images.map((img) => ({ url: img.src, alt: img.alt })),
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: caseStudy.h1,
-      description: caseStudy.metaDescription,
-      images: caseStudy.images.map((img) => img.src),
     },
   };
 }
@@ -63,153 +53,124 @@ export default async function ProjectCaseStudyPage({
   const { caseStudy } = project;
   const [heroImage, ...galleryImages] = caseStudy.images;
 
+  const atAGlance = [
+    { label: "Project type", value: caseStudy.projectType },
+    { label: "Location", value: caseStudy.location },
+    { label: "Category", value: project.category },
+  ] as const;
+
   return (
     <>
-      <JsonLd
-        data={[
-          caseStudySchema(project),
-          breadcrumbSchema([
-            { name: "Home", path: "/" },
-            { name: "Projects", path: "/projects" },
-            { name: project.title, path: `/projects/${slug}` },
-          ]),
-        ]}
-      />
       <Navigation />
-      <main className="min-h-screen bg-background">
+      <main>
         {/* Header */}
-        <section className="pt-32 pb-10 px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to all projects
+        <section className="shell pt-28 md:pt-40 pb-12 md:pb-16">
+          <nav aria-label="Breadcrumb" className="meta text-grey animate-rise">
+            <Link href="/projects" className="hover:text-ink transition-colors">
+              Projects
             </Link>
+            <span aria-hidden> / </span>
+            <span className="text-ink">{project.title}</span>
+          </nav>
 
-            <div className="flex items-center gap-3 mb-5">
-              <Badge variant="outline">{project.category}</Badge>
-              <span className="inline-flex items-center gap-1.5 text-xs font-[family-name:var(--font-inter)] text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5" />
-                {caseStudy.location}
-              </span>
-            </div>
+          <h1
+            className="display mt-8 max-w-5xl text-ink animate-rise"
+            style={
+              {
+                fontSize: "clamp(2.25rem, 5.5vw, 4.5rem)",
+                "--d": "100ms",
+              } as React.CSSProperties
+            }
+          >
+            {caseStudy.h1}
+          </h1>
 
-            <h1 className="font-[family-name:var(--font-space-grotesk)] text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight text-foreground">
-              {caseStudy.h1}
-            </h1>
-
-            <p className="mt-6 font-[family-name:var(--font-inter)] text-lg text-muted-foreground leading-relaxed max-w-3xl">
-              {project.description}
-            </p>
-          </div>
+          <p
+            className="mt-8 max-w-2xl text-lg leading-relaxed text-grey animate-rise"
+            style={{ "--d": "200ms" } as React.CSSProperties}
+          >
+            {project.description}
+          </p>
         </section>
 
         {/* Hero image */}
-        <section className="px-6 lg:px-8 pb-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="relative w-full aspect-[16/10] overflow-hidden rounded-2xl border border-border bg-surface">
+        <section
+          className="shell pb-16 md:pb-20 animate-rise"
+          style={{ "--d": "300ms" } as React.CSSProperties}
+        >
+          <div aria-hidden className="h-[2px] w-24 bg-red mb-8" />
+          <figure>
+            <div className="relative aspect-[4/3] md:aspect-[16/9] overflow-hidden bg-surface-muted">
               <Image
                 src={heroImage.src}
                 alt={heroImage.alt}
                 fill
                 priority
-                sizes="(max-width: 1024px) 100vw, 1024px"
+                sizes="(max-width: 1440px) 100vw, 1440px"
                 className="object-cover"
               />
             </div>
             {heroImage.caption && (
-              <p className="mt-3 font-[family-name:var(--font-inter)] text-sm text-muted-foreground">
+              <figcaption className="meta mt-3 text-grey">
                 {heroImage.caption}
-              </p>
+              </figcaption>
             )}
-          </div>
+          </figure>
         </section>
 
-        {/* Project at-a-glance */}
-        <section className="px-6 lg:px-8 pb-20">
-          <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-5">
-            <div className="rounded-2xl border border-border bg-surface p-6">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[var(--color-accent-soft)] text-[var(--accent)] mb-4">
-                <Hammer className="w-5 h-5" strokeWidth={1.5} />
+        {/* At a glance */}
+        <section className="shell pb-16 md:pb-24">
+          <dl className="grid grid-cols-1 sm:grid-cols-3 gap-x-8">
+            {atAGlance.map((row) => (
+              <div key={row.label} className="border-t border-line py-5">
+                <dt className="meta text-grey">{row.label}</dt>
+                <dd className="mt-2 text-ink">{row.value}</dd>
               </div>
-              <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-2">
-                Project Type
-              </h3>
-              <p className="font-[family-name:var(--font-inter)] text-base text-foreground">
-                {caseStudy.projectType}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-surface p-6">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[var(--color-accent-soft)] text-[var(--accent)] mb-4">
-                <Target className="w-5 h-5" strokeWidth={1.5} />
-              </div>
-              <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-2">
-                Client Goal
-              </h3>
-              <p className="font-[family-name:var(--font-inter)] text-base text-foreground leading-relaxed">
-                {caseStudy.clientGoal}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-surface p-6">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[var(--color-accent-soft)] text-[var(--accent)] mb-4">
-                <MapPin className="w-5 h-5" strokeWidth={1.5} />
-              </div>
-              <h3 className="font-[family-name:var(--font-space-grotesk)] text-sm font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-2">
-                Location
-              </h3>
-              <p className="font-[family-name:var(--font-inter)] text-base text-foreground">
-                {caseStudy.location}
-              </p>
-            </div>
-          </div>
+            ))}
+          </dl>
         </section>
 
         {/* Narrative */}
-        <section className="px-6 lg:px-8 pb-20">
-          <div className="max-w-3xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-              <span className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-[0.22em] text-muted-foreground uppercase">
-                The Story
-              </span>
-            </div>
-            <div className="space-y-6 font-[family-name:var(--font-inter)] text-lg leading-relaxed text-foreground/90">
-              {caseStudy.narrative.map((paragraph, i) => (
-                <p key={i}>{paragraph}</p>
+        <section className="shell pb-16 md:pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8">
+            <h2 className="display text-2xl md:text-3xl text-ink lg:col-span-4 mb-8 lg:mb-0">
+              The story.
+            </h2>
+            <div className="lg:col-span-7 lg:col-start-6 space-y-6 text-lg leading-relaxed text-ink/85">
+              {caseStudy.narrative.map((paragraph) => (
+                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
               ))}
             </div>
           </div>
         </section>
 
         {/* Challenges + Solution */}
-        <section className="px-6 lg:px-8 pb-20">
-          <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
-            <div className="rounded-2xl border border-border bg-surface p-8">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-foreground mb-5">
-                Challenges
+        <section className="shell pb-16 md:pb-24">
+          <Rule />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 pt-12 md:pt-16">
+            <div>
+              <h2 className="display text-2xl md:text-3xl text-ink mb-8">
+                Challenges.
               </h2>
-              <ul className="space-y-3">
+              <ul>
                 {caseStudy.challenges.map((c, i) => (
                   <li
-                    key={i}
-                    className="flex gap-3 font-[family-name:var(--font-inter)] text-base text-foreground/85 leading-relaxed"
+                    key={c}
+                    className="flex gap-6 border-t border-line py-5 text-ink/85 leading-relaxed"
                   >
-                    <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-[var(--accent)] flex-shrink-0" />
+                    <span className="meta text-red pt-1">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     <span>{c}</span>
                   </li>
                 ))}
               </ul>
             </div>
-
-            <div className="rounded-2xl border border-border bg-surface p-8">
-              <h2 className="font-[family-name:var(--font-space-grotesk)] text-2xl font-bold text-foreground mb-5">
-                Our Solution & Materials
+            <div>
+              <h2 className="display text-2xl md:text-3xl text-ink mb-8">
+                Solution &amp; materials.
               </h2>
-              <p className="font-[family-name:var(--font-inter)] text-base text-foreground/85 leading-relaxed">
+              <p className="border-t border-line py-5 text-ink/85 leading-relaxed">
                 {caseStudy.solution}
               </p>
             </div>
@@ -218,55 +179,46 @@ export default async function ProjectCaseStudyPage({
 
         {/* Gallery */}
         {galleryImages.length > 0 && (
-          <section className="px-6 lg:px-8 pb-20">
-            <div className="max-w-5xl mx-auto">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                <span className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-[0.22em] text-muted-foreground uppercase">
-                  Project Gallery
-                </span>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-5">
-                {galleryImages.map((img, i) => (
-                  <figure key={i} className="flex flex-col gap-3">
-                    <div className="relative w-full aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-surface">
-                      <Image
-                        src={img.src}
-                        alt={img.alt}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                        className="object-cover"
-                      />
-                    </div>
-                    {img.caption && (
-                      <figcaption className="font-[family-name:var(--font-inter)] text-sm text-muted-foreground leading-relaxed">
-                        {img.caption}
-                      </figcaption>
-                    )}
-                  </figure>
-                ))}
-              </div>
+          <section className="shell pb-16 md:pb-24">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
+              {galleryImages.map((img) => (
+                <figure key={img.src}>
+                  <div className="relative aspect-[4/3] overflow-hidden bg-surface-muted">
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  {img.caption && (
+                    <figcaption className="meta mt-3 text-grey">
+                      {img.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
             </div>
           </section>
         )}
 
         {/* Results */}
-        <section className="px-6 lg:px-8 pb-24">
-          <div className="max-w-3xl mx-auto rounded-2xl border border-border bg-surface p-8 md:p-10">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl font-bold text-foreground mb-6">
-              Final Results
+        <section className="shell pb-24 md:pb-32">
+          <Rule />
+          <div className="pt-12 md:pt-16 max-w-3xl">
+            <h2 className="display text-2xl md:text-3xl text-ink mb-8">
+              Final results.
             </h2>
-            <ul className="space-y-4">
+            <ul>
               {caseStudy.results.map((r, i) => (
                 <li
-                  key={i}
-                  className="flex gap-3 font-[family-name:var(--font-inter)] text-base md:text-lg text-foreground/90 leading-relaxed"
+                  key={r}
+                  className="flex gap-6 border-t border-line py-5 text-lg text-ink/90 leading-relaxed last:border-b"
                 >
-                  <CheckCircle2
-                    className="w-5 h-5 mt-1 text-[var(--accent)] flex-shrink-0"
-                    strokeWidth={1.75}
-                  />
+                  <span className="meta text-red pt-1.5">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                   <span>{r}</span>
                 </li>
               ))}
@@ -274,20 +226,24 @@ export default async function ProjectCaseStudyPage({
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="pb-28 px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-[family-name:var(--font-space-grotesk)] text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Planning a similar project?
-            </h2>
-            <p className="text-muted-foreground mb-8 font-[family-name:var(--font-inter)]">
-              Tell us what you&apos;re thinking — we&apos;ll bring the same craftsmanship, safety, and reliability to your build.
-            </p>
-            <Link href="/#contact">
-              <Button variant="default" size="lg">
-                Start a conversation
-                <ArrowUpRight className="w-4 h-4" />
-              </Button>
+        {/* Funnel hand-off */}
+        <section className="shell pb-24 md:pb-32">
+          <Rule />
+          <div className="pt-16 md:pt-20 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+            <div>
+              <h2 className="display text-3xl md:text-5xl text-ink max-w-xl">
+                Planning a similar project?
+              </h2>
+              <p className="mt-5 max-w-md text-grey leading-relaxed">
+                Tell us what you’re thinking. We’ll bring the same craft and
+                reliability to your New Hope or Bucks County build.
+              </p>
+            </div>
+            <Link
+              href="/#contact"
+              className={buttonVariants({ variant: "accent", size: "lg" })}
+            >
+              Start a conversation
             </Link>
           </div>
         </section>

@@ -1,13 +1,12 @@
 import {
-  Navigation,
-  Hero,
-  Services,
-  Portfolio,
   About,
-  Testimonials,
-  CTA,
   Contact,
   Footer,
+  Hero,
+  Navigation,
+  Portfolio,
+  Services,
+  Testimonials,
 } from "@/components";
 
 export default function Home() {
@@ -20,7 +19,6 @@ export default function Home() {
         <Portfolio />
         <About />
         <Testimonials />
-        <CTA />
         <Contact />
       </main>
       <Footer />

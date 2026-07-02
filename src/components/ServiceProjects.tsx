@@ -1,14 +1,10 @@
-"use client";
-
-import { motion } from "framer-motion";
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { siteConfig } from "@/components/index";
+import Link from "next/link";
 import { ProjectCard } from "@/components/Portfolio";
+import { Reveal } from "@/components/ui/reveal";
+import { Rule } from "@/components/ui/rule";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { Button } from "@/components/ui/button";
-
-const EASE = [0.19, 1, 0.22, 1] as const;
+import { siteConfig } from "@/config/site.config";
 
 interface ServiceProjectsProps {
   service: (typeof siteConfig.services)[number];
@@ -23,47 +19,30 @@ export function ServiceProjects({ service }: ServiceProjectsProps) {
   if (projects.length === 0) return null;
 
   return (
-    <section className="relative py-28 md:py-36 bg-surface-muted overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-border" />
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-20">
-          <SectionHeading
-            eyebrow="Recent work"
-            title={
-              <>
-                {service.title} projects
-                <br />
-                <span className="text-accent-gradient">we&apos;ve delivered.</span>
-              </>
-            }
-          />
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
-          >
-            <Link href="/projects">
-              <Button variant="outline" size="lg">
-                View all projects
-                <ArrowUpRight className="w-4 h-4" />
-              </Button>
+    <section>
+      <div className="shell">
+        <Rule />
+        <div className="pt-16 md:pt-24 pb-14 md:pb-20 flex flex-wrap items-end justify-between gap-8">
+          <SectionHeading title="Delivered work." />
+          <Reveal delay={150}>
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-2 meta text-ink hover:text-red transition-colors"
+            >
+              All projects
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
-          </motion.div>
+          </Reveal>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12 pb-24 md:pb-32">
           {projects.map((project, index) => (
-            <motion.div
-              key={project.slug}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.8, delay: index * 0.08, ease: EASE }}
-            >
-              <ProjectCard project={project} isMainPage={true} />
-            </motion.div>
+            <Reveal key={project.slug} delay={index * 80}>
+              <ProjectCard
+                project={project}
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </Reveal>
           ))}
         </div>
       </div>

@@ -1,65 +1,36 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
-import { siteConfig } from "@/components/index";
-import { Card } from "@/components/ui/card";
+import { Reveal } from "@/components/ui/reveal";
+import { Rule } from "@/components/ui/rule";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { siteConfig } from "@/config/site.config";
 
 export function Testimonials() {
   return (
-    <section className="relative py-28 md:py-36 bg-background">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <SectionHeading
-          align="center"
-          eyebrow="Client Stories"
-          title={
-            <>
-              What clients
-              <br />
-              <span className="text-accent-gradient">say about us.</span>
-            </>
-          }
-          className="mb-16 md:mb-20"
-        />
+    <section>
+      <div className="shell">
+        <Rule />
+        <div className="pt-16 md:pt-24 pb-14 md:pb-20">
+          <SectionHeading title="What clients say." />
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-line border-t border-line pb-24 md:pb-32">
           {siteConfig.testimonials.map((t, index) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <Card className="h-full p-8 hover:shadow-lg transition-shadow">
-                <Quote className="w-8 h-8 text-[var(--accent)]/30 mb-4" />
-
-                <div className="flex gap-0.5 mb-5 text-[var(--accent)]">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} size={14} fill="currentColor" />
-                  ))}
+            <Reveal key={t.name} delay={index * 100}>
+              <figure className="flex h-full flex-col border-b border-line md:border-b-0 py-10 md:py-12 md:px-10 md:first:pl-0 md:last:pr-0">
+                <div
+                  role="img"
+                  aria-label={`${t.rating} out of 5 stars`}
+                  className="font-sans text-sm tracking-[0.25em] text-red"
+                >
+                  {"★".repeat(t.rating)}
                 </div>
-
-                <blockquote className="font-[family-name:var(--font-inter)] text-foreground leading-relaxed mb-6">
-                  &ldquo;{t.quote}&rdquo;
+                <blockquote className="mt-6 flex-1 text-lg leading-relaxed text-ink">
+                  “{t.quote}”
                 </blockquote>
-
-                <div className="flex items-center gap-3 pt-6 border-t border-border">
-                  <div className="w-10 h-10 rounded-full bg-surface-muted flex items-center justify-center font-[family-name:var(--font-space-grotesk)] font-bold text-foreground">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-[family-name:var(--font-space-grotesk)] font-semibold text-foreground text-sm">
-                      {t.name}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {t.role}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
+                <figcaption className="meta mt-8 text-grey">
+                  {t.name}, {t.role}
+                </figcaption>
+              </figure>
+            </Reveal>
           ))}
         </div>
       </div>

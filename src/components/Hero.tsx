@@ -1,156 +1,104 @@
-"use client";
-
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Phone, ShieldCheck, Star } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { siteConfig } from "@/components/index";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { siteConfig } from "@/config/site.config";
 
-const ease = [0.19, 1, 0.22, 1] as const;
+const META_ROWS = [
+  { label: "Established", value: String(siteConfig.company.foundedYear) },
+  {
+    label: "Base",
+    value: `${siteConfig.contact.address.city}, ${siteConfig.contact.address.state}`,
+  },
+  { label: "Range", value: `${siteConfig.contact.serviceArea} & New Hope` },
+  { label: "Status", value: "Licensed & insured, PA" },
+] as const;
 
 export function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [loaded, setLoaded] = useState(false);
-  const { company, contact, cta } = siteConfig;
-
-  // Parallax: the background photo drifts slower than the page as it scrolls away.
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["-7%", "7%"]);
-
   return (
-    <section
-      id="home"
-      ref={sectionRef}
-      className="relative w-full min-h-screen flex flex-col items-start justify-end overflow-hidden bg-background pt-28 pb-20"
-    >
-      {/* Parallax background */}
-      <motion.div
-        style={{ y: backgroundY }}
-        className="absolute inset-0 will-change-transform"
-      >
-        <div className="absolute inset-0 scale-[1.3]">
-          <Image
-            src="/portfolio/shed_remodel.jpg"
-            alt="Shed remodel by Red Bridge Construction"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-            onLoad={() => setLoaded(true)}
-          />
-        </div>
-        {!loaded && <div className="absolute inset-0 bg-foreground" />}
-      </motion.div>
-
-      {/* Dark scrims — darken the photo so the bright bottom-left text pops */}
-      <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/55 to-foreground/15" />
-      <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/35 to-transparent" />
-
-      {/* Bottom-left content */}
-      <div className="relative m-8">
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease }}
-          className="flex items-center gap-2.5 mb-5"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-          <span className="font-[family-name:var(--font-inter)] text-xs font-semibold tracking-[0.18em] text-white/75 uppercase">
-            New Hope &amp; {contact.serviceArea} · Est. {company.foundedYear}
-          </span>
-        </motion.div>
-
-        {/* Headline — accent panel wipes away to reveal each line */}
+    <section id="home" className="relative">
+      <div className="shell pt-32 md:pt-44 pb-14 md:pb-20">
         <h1
-          className="font-[family-name:var(--font-space-grotesk)] font-bold text-white leading-[0.95] tracking-tight"
-          style={{
-            fontSize: "clamp(2.75rem, 9vw, 6rem)",
-            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)",
-          }}
+          className="display text-ink animate-rise"
+          style={{ fontSize: "clamp(3rem, 9.5vw, 8.25rem)" }}
         >
-          <span className="block relative w-fit after:absolute after:inset-0 after:bg-accent after:animate-wipe-left">
-            Built with care.
-          </span>
-          <span className="block relative mt-2 w-fit after:absolute after:inset-0 after:bg-accent after:animate-wipe-right after:[animation-delay:0.18s]">
-            <span className="italic font-light text-white/70">Finished </span>
-            <span className="text-accent-gradient">on time.</span>
+          Building
+          <br />
+          Bucks County
+          <br />
+          <span className="text-grey">
+            since {siteConfig.company.foundedYear}.
           </span>
         </h1>
 
-        {/* Value proposition — what we do, for whom, why us */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease, delay: 0.5 }}
-          className="font-[family-name:var(--font-inter)] text-lg md:text-xl text-white/80 leading-relaxed max-w-xl mt-6"
-        >
-          Custom homes, remodels, and historic restorations across{" "}
-          {contact.serviceArea} — {company.yearsExperience} years of licensed
-          craftsmanship, delivered on schedule and inspection-ready.
-        </motion.p>
+        <div
+          aria-hidden
+          className="mt-10 h-[2px] w-24 bg-red animate-draw"
+          style={{ "--d": "500ms" } as React.CSSProperties}
+        />
 
-        {/* Calls to action */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease, delay: 0.62 }}
-          className="flex flex-col sm:flex-row gap-3 mt-8"
-        >
-          <a href={cta.buttonLink}>
-            <Button variant="accent" size="lg" className="w-full sm:w-auto">
-              {cta.buttonText}
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-            </Button>
-          </a>
-          <a href={`tel:${contact.phone.replace(/[^\d+]/g, "")}`}>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto border-white/30 bg-transparent text-white hover:border-white/50 hover:bg-white/10"
-            >
-              <Phone className="w-4 h-4" />
-              {contact.phone}
-            </Button>
-          </a>
-        </motion.div>
-
-        {/* Trust signals */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease, delay: 0.74 }}
-          className="flex flex-wrap items-center gap-x-5 gap-y-3 mt-8 font-[family-name:var(--font-inter)] text-sm text-white/70"
-        >
-          <div className="flex items-center gap-2">
-            <div className="flex gap-0.5 text-[var(--accent)]">
-              {["s1", "s2", "s3", "s4", "s5"].map((id) => (
-                <Star key={id} className="w-4 h-4 fill-current" />
-              ))}
+        <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-8">
+          <div
+            className="lg:col-span-6 animate-rise"
+            style={{ "--d": "250ms" } as React.CSSProperties}
+          >
+            <p className="max-w-xl text-lg md:text-xl leading-relaxed text-grey">
+              Remodels, custom homes, and historic restorations across New Hope
+              and Bucks County. A small Kintnersville team has treated craft and
+              schedule as the same promise for{" "}
+              {siteConfig.company.yearsExperience} years.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href="#contact"
+                className={buttonVariants({ variant: "accent", size: "lg" })}
+              >
+                Start your project
+              </a>
+              <a
+                href="#portfolio"
+                className={buttonVariants({ variant: "ghost", size: "lg" })}
+              >
+                See the work
+                <ArrowDown />
+              </a>
             </div>
-            <span className="font-semibold text-white">5.0</span>
           </div>
 
-          <span className="hidden sm:block w-px h-4 bg-white/25" />
+          {/* Title block: drawing-sheet meta */}
+          <dl
+            className="lg:col-span-4 lg:col-start-9 self-end animate-rise"
+            style={{ "--d": "400ms" } as React.CSSProperties}
+          >
+            {META_ROWS.map((row) => (
+              <div
+                key={row.label}
+                className="flex items-baseline justify-between gap-6 border-t border-line py-3"
+              >
+                <dt className="meta text-grey">{row.label}</dt>
+                <dd className="meta text-ink">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
 
-          <span>
-            <span className="font-semibold text-white">
-              {company.projectsCompleted}+
-            </span>{" "}
-            projects
-          </span>
-
-          <span className="hidden sm:block w-px h-4 bg-white/25" />
-
-          <span className="inline-flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
-            Licensed &amp; Insured
-          </span>
-        </motion.div>
+      <div
+        className="shell pb-24 md:pb-32 animate-rise"
+        style={{ "--d": "550ms" } as React.CSSProperties}
+      >
+        <div className="relative aspect-[4/3] md:aspect-[21/9] overflow-hidden bg-surface-muted">
+          <Image
+            src="/portfolio/bob_house_2.jpg"
+            alt="Timber framing of a custom home built by Red Bridge Construction in New Hope, PA"
+            fill
+            priority
+            sizes="(max-width: 1440px) 100vw, 1440px"
+            className="object-cover"
+          />
+        </div>
+        <p className="meta mt-3 text-grey">
+          Custom home framing in New Hope, PA, delivered on a 14-month schedule
+        </p>
       </div>
     </section>
   );
