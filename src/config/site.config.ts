@@ -579,8 +579,8 @@ export const siteConfig = {
       rating: 5,
     },
     {
-      name: "Dwayne.",
-      role: "Commercial Client",
+      name: "Dwayne",
+      role: "Residential Client",
       quote:
         "Bedroom Remodel - amazing job!",
       rating: 5,

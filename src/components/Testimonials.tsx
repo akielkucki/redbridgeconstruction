@@ -15,7 +15,7 @@ export function Testimonials() {
         <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-line border-t border-line pb-24 md:pb-32">
           {siteConfig.testimonials.map((t, index) => (
             <Reveal key={t.name} delay={index * 100}>
-              <figure className="flex h-full flex-col border-b border-line md:border-b-0 py-10 md:py-12 md:px-10 md:first:pl-0 md:last:pr-0">
+              <figure className="flex h-full flex-col border-b border-line md:border-b-0 py-10 md:py-12 md:px-10 ">
                 <div
                   role="img"
                   aria-label={`${t.rating} out of 5 stars`}
