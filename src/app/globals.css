@@ -40,6 +40,7 @@
   scroll-behavior: smooth;
   /* Allows animated open/close of native <details> in supporting browsers */
   interpolate-size: allow-keywords;
+  view-transition-name: root;
 }
 
 html,
@@ -223,3 +224,25 @@ details[open]::details-content {
 ::-webkit-scrollbar-thumb:hover {
   background: #b9b4a7;
 }
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: none;
+}
+
+/* Make new content wipe in from the right */
+::view-transition-new(root) {
+  animation: wipe-in 0.6s ease-out forwards;
+}
+
+/* Animation wiping in the new content */
+@keyframes wipe-in {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+

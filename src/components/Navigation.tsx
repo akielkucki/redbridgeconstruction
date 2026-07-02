@@ -29,9 +29,9 @@ export function Navigation() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        isScrolled || isOpen
-          ? "bg-paper/90 backdrop-blur-md border-b border-line"
-          : "bg-transparent border-b border-transparent",
+       isOpen
+          ? "bg-paper/90 min-h-full backdrop-blur-md border-b border-line"
+          : "bg-transparent border-b border-transparent", isScrolled ? "bg-paper/95" : "bg-transparent"
       )}
     >
       <div className="shell flex h-16 md:h-[72px] items-center justify-between gap-6">
