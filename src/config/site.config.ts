@@ -565,24 +565,24 @@ export const siteConfig = {
   // Testimonials
   testimonials: [
     {
-      name: "James L.",
+      name: "Nikki K.",
       role: "Homeowner",
       quote:
-        "The team at Red Bridge Construction completely transformed our master bathroom. From the custom niche shelving to the flawless tile work, their attention to detail is unmatched. They kept the workspace clean and finished right on schedule.",
+        "Rob and his team completely remodeled my home. The new kitchen was gourmet, the new bathroom was stylish, and the new bedroom was comfortable. I highly recommend them!",
       rating: 5,
     },
     {
-      name: "Rebecca T.",
+      name: "Steve",
       role: "Residential Client",
       quote:
-        "We hired Red Bridge to renovate our outdoor shed and add electrical and insulation. They took a dilapidated structure and turned it into a beautiful, functional workspace. Excellent communication throughout the entire project.",
+        "New deck construction was a game-changer for my home. The new deck was a true masterpiece",
       rating: 5,
     },
     {
-      name: "Daniel M.",
+      name: "Dwayne.",
       role: "Commercial Client",
       quote:
-        "Finding a reliable contractor can be tough, but Red Bridge Construction made the process completely painless. They provided transparent pricing, top-notch craftsmanship, and true to their word, they finished on time and on budget. Experience really does matter.",
+        "Bedroom Remodel - amazing job!",
       rating: 5,
     },
   ],
