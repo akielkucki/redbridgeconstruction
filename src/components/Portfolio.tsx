@@ -13,6 +13,7 @@ export function ProjectCard({
   project,
   className,
   sizes = "(max-width: 768px) 100vw, 50vw",
+
 }: {
   project: Project;
   className?: string;

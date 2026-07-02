@@ -115,7 +115,7 @@ export function ProjectsClient() {
                   <ProjectCard
                     key={project.slug}
                     project={project}
-                    isMainPage={true}
+
                   />
                 ))}
               </motion.div>
