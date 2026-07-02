@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site.config";
@@ -8,6 +9,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = siteConfig.navigation.filter((item) => item.label !== "Home");
 
 export function Navigation() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,13 +27,17 @@ export function Navigation() {
     };
   }, [isOpen]);
 
+  const solid = isScrolled || isOpen;
+  // The homepage hero is a dark photo, so use light nav text while over it.
+  const light = pathname === "/" && !solid;
+
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-       isOpen
-          ? "bg-paper/90 min-h-full backdrop-blur-md border-b border-line"
-          : "bg-transparent border-b border-transparent", isScrolled ? "bg-paper/95" : "bg-transparent"
+        solid
+          ? "bg-paper/95 backdrop-blur-md border-b border-line"
+          : "bg-transparent border-b border-transparent",
       )}
     >
       <div className="shell flex h-16 md:h-[72px] items-center justify-between gap-6">
@@ -41,7 +47,12 @@ export function Navigation() {
           aria-label={siteConfig.company.name}
         >
           <span aria-hidden className="block h-[3px] w-6 bg-red" />
-          <span className="text-[15px] font-semibold tracking-tight text-ink">
+          <span
+            className={cn(
+              "text-[15px] font-semibold tracking-tight transition-colors duration-300",
+              light ? "text-paper" : "text-ink",
+            )}
+          >
             {siteConfig.company.name}
           </span>
         </a>
@@ -51,7 +62,12 @@ export function Navigation() {
             <a
               key={item.label}
               href={item.href}
-              className="text-sm text-ink/70 hover:text-ink transition-colors duration-200"
+              className={cn(
+                "text-sm transition-colors duration-200",
+                light
+                  ? "text-paper/80 hover:text-paper"
+                  : "text-ink/70 hover:text-ink",
+              )}
             >
               {item.label}
             </a>
@@ -61,7 +77,12 @@ export function Navigation() {
         <div className="hidden md:flex items-center gap-6">
           <a
             href={`tel:${siteConfig.contact.phone}`}
-            className="meta text-grey hover:text-ink transition-colors"
+            className={cn(
+              "meta transition-colors",
+              light
+                ? "text-paper/70 hover:text-paper"
+                : "text-grey hover:text-ink",
+            )}
           >
             {siteConfig.contact.phone}
           </a>
@@ -83,13 +104,15 @@ export function Navigation() {
         >
           <span
             className={cn(
-              "block h-px w-6 bg-ink transition-transform duration-300",
+              "block h-px w-6 transition-transform duration-300",
+              light ? "bg-paper" : "bg-ink",
               isOpen && "translate-y-[3.5px] rotate-45",
             )}
           />
           <span
             className={cn(
-              "block h-px w-6 bg-ink transition-transform duration-300",
+              "block h-px w-6 transition-transform duration-300",
+              light ? "bg-paper" : "bg-ink",
               isOpen && "-translate-y-[3.5px] -rotate-45",
             )}
           />
